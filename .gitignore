@@ -5,34 +5,46 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-# Node and related ecosystem
-# ==========================
-.nodemonignore
-.sass-cache/
-node_modules/
-public/lib/
-app/tests/coverage/
-.bower-*/
-.idea/
-coverage/
-.coveralls.yml
+# compiled output
+/music-site/dist
+/music-site/tmp
+/music-site/out-tsc
 
-# MEAN.js app and assets
-# ======================
-public/dist/
-uploads
-modules/users/client/img/profile/uploads
-config/env/local.js
-config/env/local-*.js
-*.pem
+# dependencies
+/music-site/node_modules
 
-# Compiled less and sass files
-# ============================
-modules/*/client/scss/*.css
-modules/*/client/less/*.css
+# IDEs and editors
+/music-site/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Ignoring MEAN.JS's gh-pages branch for documenation
-_site/
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/music-site/.sass-cache
+/music-site/connect.lock
+/music-site/coverage
+/music-site/libpeerconnection.log
+npm-debug.log
+testem.log
+/music-site/typings
+
+# e2e
+/music-site/e2e/*.js
+/music-site/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
 
 # General
 # =======
