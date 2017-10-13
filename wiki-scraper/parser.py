@@ -1,10 +1,45 @@
 import requests
 from bs4 import BeautifulSoup
-import urllib 
+#import urllib 
+import sqlite3
+import argparse
+
+
+argparser = argparse.ArgumentParser(description="Normal or Rerun")
+argparser.add_argument('--rerun', dest='rerun', action='store_true')
 
 pageURI = 'https://en.wikipedia.org'
+conn = sqlite3.connect('parser.db')
+
+curse = conn.cursor()
+
+def restart():
+    for row in curse.execute('''
+    Select *
+    from visits
+    ;
+    '''):
+        print(row)
+        if row[2] == 1:
+            sql_s = '''
+                update visits
+                set visited = 0
+                where band_link = '{}'
+                ;
+                '''.format(row[0])
+            print(sql_s)
+            curse.execute(sql_s);
+    conn.commit()
+    
 
 if __name__ == '__main__':
+
+    args=argparser.parse_args()
+
+    if args.rerun:
+        restart()
+
+    quit()
 
     _toVisit = [
             #'/wiki/Ice_Cube',
@@ -70,14 +105,46 @@ if __name__ == '__main__':
                 print('\t',each.a.text, '----', pair[each.a.text])
                 bandRow[cur_th].append({'Value':each.a.text, 'Link':pair[each.a.text]})
 
-        _visited.append(_toVisit[0])
-        del _toVisit[0]
+
+
+        sql_s = '''
+            update visits
+            set visited = 1
+            where band_link = '{}'
+            ;
+            '''.format(cur_visiting)
+        print(sql_s)
+
+        curse.execute(sql_s)
+        conn.commit()
+
+
+        #_visited.append(_toVisit[0])
+        #del _toVisit[0]
 
 
         if bandRow.get('Associated acts', None) and bandRow.get('Genres', None):
             for act in bandRow['Associated acts']:
                 if act['Link'] not in _visited and act['Link'] is not None:
                     print('\tNeed to visit {}'.format(act['Value']))
-                    _toVisit.append(act['Link'])
+                    #_toVisit.append(act['Link'])
+                    sql_s = '''
+                        insert into visits values(
+                            band_link
+                            ,band_name
+                            ,visited
+                        )
+                        values
+                            {}
+                            ,{}
+                            0
+                        ;
+                        '''.format(act['Link'], act['Value'])
+                    print(sql_s)
+                    curse.execute(sql_s)
+
                 elif act['Link'] is None:
                     print("Can't visit", act['Link'])
+            conn.commit()
+
+
