@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ $# -eq 1 ]
+then
+    echo '######## cd src ########'
+    cd src
+    echo '######## ng build ########'
+    ng build
+    echo '######## cd .. ########'
+    cd ..
+fi
+echo '######## startup server ########'
+PGUSER=admin \
+    PGHOST=localhost \
+    PGPASSWORD=secr3tp5wd \
+    PGDATABASE=core \
+    PGPORT=5432 \
+    node server.js
