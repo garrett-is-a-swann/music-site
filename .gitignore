@@ -92,3 +92,7 @@ mongod
 *.ntvs*
 *.njsproj
 *.sln
+
+# Virtual Env
+# ===========
+venv/
