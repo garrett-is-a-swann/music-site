@@ -1,6 +1,32 @@
 # MusicSite
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.4.
+## To get running:
+
+```
+docker ps
+```
+
+* If our PSQL container isn't running, run:
+
+```
+docker start <PSQL_NAME|core>
+```
+
+* Run server startup script AND build changes to angular things:
+
+```
+runscript <literally_any_parameter_here>
+```
+
+* Run startup script with no building of angular changers:
+
+```
+runscript
+```
+
+
+
+# Angular default readme stuff
 
 ## Development server
 
