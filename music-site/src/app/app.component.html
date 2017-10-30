@@ -9,15 +9,18 @@
         Welcome to our site, add a band.
     </h1>
 
+    <p>BANDS:</p>
     <li *ngFor="let band of bands">
         {{ band }}
     </li>
 
+    <p>Add a new band:
+    </p>
     <input #typingBox (keyup.enter)="onKey(typingBox.value)" 
         (blur)="onKey(typingBox.value)">
         <p>{{typed}}</p>
 
-    <button (click)="onKey(typingBox.value)">Click me!</button>
+    <button (click)="onKey(typingBox.value)">Done</button>
 </div>
 
 <h2>Here are some links to help you start: </h2>

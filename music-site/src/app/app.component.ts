@@ -1,24 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-//import { HttpClient } from '@angular/common/http';
+
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
 })
-export class IndexView{// implements OnInit {
-    //bands: string[];
+export class IndexView implements OnInit {
+    bands: string[] = [];
 
-    //constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {}
 
-    //ngOnInit(): void {
-        //this.http.get('/bands').subscribe(data => {
-            //this.bands = data['name']
-            //});
-        //}
+    ngOnInit(): void {
+        this.http.get('/api/bands').subscribe(data => {
+            //console.log(data)
+            for(var index in data)
+            {
+                //console.log(data[index])
+                this.bands.push(data[index]['name'])
+            }
+            });
+        }
     title = 'app';
-    clickMessage="You're a cool dude"
-    clicked = false
 
     typed = ''
 

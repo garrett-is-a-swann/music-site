@@ -5,7 +5,7 @@ then
     echo '######## cd src ########'
     cd src
     echo '######## ng build ########'
-    ng build
+    ng build --watch &
     echo '######## cd .. ########'
     cd ..
 fi
