@@ -96,3 +96,7 @@ mongod
 # Virtual Env
 # ===========
 venv/
+
+# My .vim_workspace dotfile
+# =========================
+.vim_workspace
