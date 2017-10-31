@@ -17,10 +17,10 @@
     <p>Add a new band:
     </p>
     <input #typingBox (keyup.enter)="onKey(typingBox.value)" 
-        (blur)="onKey(typingBox.value)">
+        (blur)="onKey(typingBox.value, false)">
         <p>{{typed}}</p>
 
-    <button (click)="onKey(typingBox.value)">Done</button>
+    <button (click)="onKey(typingBox.value, true)">Done</button>
 </div>
 
 <h2>Here are some links to help you start: </h2>

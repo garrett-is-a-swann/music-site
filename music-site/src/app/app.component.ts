@@ -20,13 +20,22 @@ export class IndexView implements OnInit {
                 //console.log(data[index])
                 this.bands.push(data[index]['name'])
             }
-            });
-        }
+        });
+    }
     title = 'app';
 
     typed = ''
 
-    onKey(value: string) { // without type info
+    onKey(value: string, isClicked: boolean) { // without type info
         this.typed = value;
+        console.log(isClicked);
+        if( isClicked ) {
+            this.http.post('/api/bands',
+                // Build POST to send
+                {
+                    name:this.typed
+                })
+            .subscribe(); // Sends POST
+        }
     }
 }
