@@ -11,16 +11,19 @@
     <input #user (keyup.enter)="onKey(user.value, email.value, pass.value)" 
         (blur)="onKey(user.value, email.value, pass.value)">
         <p>{{username}}</p>
+        <h4>{{usernameError}}</h4>
 
     <p>Email Address:</p>
     <input #email (keyup.enter)="onKey(user.value, email.value, pass.value)"
         (blur)="onKey(user.value, email.value, pass.value)">
         <p>{{email_addr}}</p>
+        <h4>{{email_addrError}}</h4>
 
     <p>Password:</p>
     <input #pass (keyup.enter)="onKey(user.value, email.value, pass.value)"
         (blur)="onKey(user.value, email.value, pass.value)">
         <p>{{password}}</p>
+        <h4>{{passwordError}}</h4>
 
     <button (click)="registerSubmit()">Register</button>
 </div>

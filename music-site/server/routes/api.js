@@ -80,67 +80,57 @@ router.route('/register')
         next(new Error('Not implemented'));
     })
     .post((req, res, next) => {
-        console.log(req.body);
         const values = [];
 
-        const errors = [];
+        const errors = {};
 
         for (each in req.body)
         {
             values.push(req.body[each]);
         }
-        console.log(values);
-        pool.query('Select * from dim_user where username = $1', [req.body.username]).
-            then(resp => {
-                console.log('Checking username:', resp.rows);
-                console.log(resp.rows.length)
-                if( resp.rows.length )
+
+        pool.query('Select * from dim_user where username = $1', [req.body.username],
+            (e, resp) =>
+            {
+                if(e)
                 {
-                    errors.push({'username':'Username has been taken.'});
-                    for(each in errors)
+                    console.log(e);
+                }
+                else{
+                    if( resp.rows.length )
                     {
-                        console.log(each, errors[each]);
+                        errors['username']='Username has been taken.';
                     }
-
-                    console.log('asdaS"ASDFASDFASDFAS');
                 }
-            })
-            .catch(e => {
-                //console.log(e);
-            });
-        pool.query('Select * from dim_user where email = $1', [req.body.email]).
-            then(resp => {
-                //console.log('Checking email', resp.rows);
-                if( resp.rows.length )
-                {
-                    errors.push({'email':'Email is already in use.'});
-                }
-            })
-            .catch(e => {
-                //console.log(e);
-            });
-        //console.log('ERRORS ARE RIGHT HERE', errors)
+                pool.query('Select * from dim_user where email = $1', [req.body.email],
+                    (e, resp) => {
+                        if(e){
+                            console.log(e);
+                        }
+                        else{
+                            if( resp.rows.length )
+                            {
+                                errors['email']='Email is already in use.';
+                            }
+                        }
 
-        console.log('error length',errors.length);
-
-        if( errors.length )
-        {
-            console.log(errors);
-            res.send(errors);
-        }
-        else
-        {
-            pool.query('INSERT INTO dim_user (username, email, password, date_created)'
-                    +' VALUES ($1, $2, $3, current_timestamp) RETURNING *', values)
-                .then(resp => {
-                    //console.log(resp);
-                    //res.send(
-                })
-                .catch(e => {
-                    //console.log(e);
-                    //console.log('ERRORS ARE RIGHT HERE', errors)
-                });
-        }
+                        if( Object.keys(errors).length )
+                        {
+                            res.send(errors);
+                        }
+                        else
+                        {
+                            pool.query('INSERT INTO dim_user (username, email, password, date_created)'
+                                    +' VALUES ($1, $2, $3, current_timestamp) RETURNING *', values)
+                                .then(resp => {
+                                    console.log(resp);
+                                })
+                            .catch(e => {
+                                console.log(e);
+                            });
+                        }
+                    })
+            })
     })
 
 module.exports = router;

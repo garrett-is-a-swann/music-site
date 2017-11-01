@@ -24,6 +24,8 @@ export class RegisterComponent implements OnInit {
     email_addrError = '';
     passwordError = '';
 
+    errors: string[]=[];
+
     onKey(userString: string, emailString: string, passString: string): void{
         this.username = userString;
         this.password = passString;
@@ -31,6 +33,10 @@ export class RegisterComponent implements OnInit {
     }
 
     registerSubmit(): void {
+        console.log('asda')
+        this.usernameError = '';
+        this.email_addrError = '';
+        this.passwordError = '';
         this.http.post('/api/register',
         // Build POST to send
         {
@@ -39,9 +45,12 @@ export class RegisterComponent implements OnInit {
             ,password:this.password
         })
         .subscribe((data:any) => {
+            console.log(data)
+            console.log(data['username'])
             this.usernameError = data.username?data.username:'';
             this.email_addrError = data.email?data.email:'';
             this.passwordError = data.password?data.password:'';
         }); // Sends POST
+        console.log(this.usernameError)
     }
 }
