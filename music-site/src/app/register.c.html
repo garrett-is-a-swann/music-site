@@ -1,0 +1,27 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+    <h1>
+        Welcome to {{title}}!
+    </h1>
+</div>
+
+
+<div>
+    <p>Username:</p>
+    <input #user (keyup.enter)="onKey(user.value, email.value, pass.value)" 
+        (blur)="onKey(user.value, email.value, pass.value)">
+        <p>{{username}}</p>
+
+    <p>Email Address:</p>
+    <input #email (keyup.enter)="onKey(user.value, email.value, pass.value)"
+        (blur)="onKey(user.value, email.value, pass.value)">
+        <p>{{email_addr}}</p>
+
+    <p>Password:</p>
+    <input #pass (keyup.enter)="onKey(user.value, email.value, pass.value)"
+        (blur)="onKey(user.value, email.value, pass.value)">
+        <p>{{password}}</p>
+
+    <button (click)="registerSubmit()">Register</button>
+</div>
+

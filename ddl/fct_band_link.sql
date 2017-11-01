@@ -1,9 +1,9 @@
-drop table if exists dim_band;
+drop table if exists fct_band_link;
 
-create table dim_band
+create table fct_band_link
 (
-    name varchar(50) primary key
-    ,genre varchar(50)
-    ,wiki_url varchar(50)
+    from_name varchar(50) NOT NULL
+    ,to_name varchar(50) NOT NULL
+    ,FOREIGN KEY (from_name) REFERENCES dim_band(name)
 )
 

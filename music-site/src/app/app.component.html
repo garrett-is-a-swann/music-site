@@ -1,38 +1,7 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-    <h1>
-        Welcome to {{title}}!
-    </h1>
-</div>
-<div>
-    <h1>
-        Welcome to our site, add a band.
-    </h1>
-
-    <p>BANDS:</p>
-    <li *ngFor="let band of bands">
-        {{ band }}
-    </li>
-
-    <p>Add a new band:
-    </p>
-    <input #typingBox (keyup.enter)="onKey(typingBox.value)" 
-        (blur)="onKey(typingBox.value, false)">
-        <p>{{typed}}</p>
-
-    <button (click)="onKey(typingBox.value, true)">Done</button>
-</div>
-
-<h2>Here are some links to help you start: </h2>
-<ul>
-    <li>
-        <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-    </li>
-    <li>
-        <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-    </li>
-    <li>
-        <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-    </li>
-</ul>
-
+<h1 class="title">Hyper Dank Music Site</h1>
+<nav>
+    <a routerLink="/login" routerLinkActivate="activate">Login</a>
+    <a routerLink="/register" routerLinkActivate="activate">Register</a>
+    <a routerLink="/" routerLinkActivate="activate">Index</a>
+    <router-outlet></router-outlet>
+</nav>

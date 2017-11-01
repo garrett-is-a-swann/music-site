@@ -1,0 +1,25 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+    <h1>
+        Welcome to {{title}}!
+    </h1>
+</div>
+<div>
+    <h1>
+        Welcome to our site, add a band.
+    </h1>
+
+    <p>BANDS:</p>
+    <li *ngFor="let band of bands">
+        {{ band }}
+    </li>
+
+    <p>Add a new band:
+    </p>
+    <input #typingBox (keyup.enter)="onKey(typingBox.value, false)" 
+        (blur)="onKey(typingBox.value, false)">
+        <p>{{typed}}</p>
+
+    <button (click)="onKey(typingBox.value, true)">Done</button>
+</div>
+

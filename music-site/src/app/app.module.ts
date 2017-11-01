@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-
-import { IndexView } from './app.component';
-import { LoginComponent } from './login.component';
-
-import {HttpClientModule} from '@angular/common/http';
-
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
+
+// Import our Components
+import { AppComponent } from './app.component';
+import { LoginComponent } from './login.component';
+import { RegisterComponent } from './register.c';
+import { IndexView } from './index.component';
+
 
 @NgModule({ 
     declarations: [ 
-        IndexView,
+        AppComponent,
         LoginComponent,
+        RegisterComponent,
+        IndexView
     ],
     imports: [
         AppRoutingModule,
@@ -23,6 +27,6 @@ import { AppRoutingModule } from './app-routing.module';
     ],
     exports: [ RouterModule ],
     providers: [],
-    bootstrap: [IndexView]
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
