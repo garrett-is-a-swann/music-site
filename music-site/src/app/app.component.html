@@ -1,7 +1,13 @@
-<h1 class="title">Hyper Dank Music Site</h1>
+<h1 class="mt-4" style="text-align:center;" >Music Graphing</h1>
+
 <nav>
-    <a routerLink="/login" routerLinkActivate="activate">Login</a>
-    <a routerLink="/register" routerLinkActivate="activate">Register</a>
-    <a routerLink="/" routerLinkActivate="activate">Index</a>
+	<div class="container">
+		<div class="row justify-content-center">
+			<a class="mx-2" routerLink="/" routerLinkActivate="activate">Graph</a>
+		    <a class="mx-2" routerLink="/login" routerLinkActivate="activate">Login</a>
+		    <a class="mx-1" routerLink="/register" routerLinkActivate="activate">Register</a>
+	    </div> 
+	</div>
+    <div class="my-4"></div>
     <router-outlet></router-outlet>
 </nav>
