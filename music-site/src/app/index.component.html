@@ -1,25 +1,32 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-    <h1>
-        Welcome to {{title}}!
-    </h1>
-</div>
 <div>
-    <h1>
-        Welcome to our site, add a band.
-    </h1>
+    <h4 style="text-align:center">
+        Genre Graph
+    </h4>
 
-    <p>BANDS:</p>
+    <div class="container" style="width:750px; height:450px; border:1px solid">
+        <div class="row">
+            <div class="col align-self-end">
+            </div>
+        </div>
+    </div>
+
+    <!--<p>BANDS:</p>
     <li *ngFor="let band of bands">
         {{ band }}
-    </li>
+    </li>-->
 
-    <p>Add a new band:
-    </p>
-    <input #typingBox (keyup.enter)="onKey(typingBox.value, false)" 
-        (blur)="onKey(typingBox.value, false)">
+    <div class="container mt-3 pb-5">
+        <div class="col mx-auto">
+        <div class="row justify-content-center">
+        <p>Add a new band:</p>
+        </div>
+        <div class="row justify-content-center">
         <p>{{typed}}</p>
+        <button class="button" style="outline:0;" (click)="onKey(typingBox.value, true)">Add</button>
+        <input #typingBox (keyup.enter)="onKey(typingBox.value, false)" (blur)="onKey(typingBox.value, false)" placeholder="Band Name">
+        </div>
+        </div>
+    </div>
 
-    <button (click)="onKey(typingBox.value, true)">Done</button>
 </div>
-
