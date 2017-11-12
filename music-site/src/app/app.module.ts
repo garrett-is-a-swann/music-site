@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login.component';
 import { RegisterComponent } from './register.c';
+import { ProfileComponent } from './profile.c';
 import { IndexView } from './index.component';
 
 
@@ -16,6 +17,7 @@ import { IndexView } from './index.component';
         AppComponent,
         LoginComponent,
         RegisterComponent,
+        ProfileComponent,
         IndexView
     ],
     imports: [
