@@ -1,10 +1,10 @@
-create table if not exists raw_data(
-    bandname text primary key
-    ,origin text
-    ,genres text
-    ,years_active text
-    ,associated_act text
-    ,website text
-    ,members text
-    ,past_members text
+CREATE TABLE IF NOT EXISTS raw_data(
+    bandname TEXT PRIMARY KEY
+    ,origin TEXT
+    ,genres TEXT
+    ,years_active TEXT
+    ,associated_act TEXT
+    ,website TEXT
+    ,members TEXT
+    ,past_members TEXT
 );

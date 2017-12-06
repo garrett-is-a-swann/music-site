@@ -9,7 +9,7 @@ argparser = argparse.ArgumentParser(description="Normal or Rerun")
 argparser.add_argument('--rerun', dest='rerun', action='store_true')
 
 pageURI = 'https://en.wikipedia.org'
-conn = sqlite3.connect('parser.db')
+conn = sqlite3.connect('spider.db')
 
 curse = conn.cursor()
 
@@ -39,14 +39,24 @@ if __name__ == '__main__':
     if args.rerun:
         restart()
 
-    quit()
 
+    _toVisit = curse.execute('''
+                                SELECT
+                                    band_link
+                                FROM
+                                    visits
+                                WHERE
+                                    visited = 0;
+                            ''').fetchone()[0]
+                                
+    print(_toVisit)
+    '''
     _toVisit = [
             #'/wiki/Ice_Cube',
             #'/wiki/Audioslave',
             '/wiki/Volbeat',
             #'/wiki/Red_Hot_Chili_Peppers',
-            ]
+            ]'''
 
 
     _visited = []
@@ -54,9 +64,9 @@ if __name__ == '__main__':
 
     while len(_toVisit):
         bandRow={}
-        print('Visiting ', _toVisit[0])
-        bandRow['Band']=_toVisit[0]
-        r = requests.get(pageURI+_toVisit[0])
+        print('Visiting ', _toVisit)
+        bandRow['Band']=_toVisit
+        r = requests.get(pageURI+_toVisit)
         soup = BeautifulSoup(r.text, 'lxml')
         
         try:
@@ -66,8 +76,8 @@ if __name__ == '__main__':
             content_rows = table.find_all('tr')
         except:
             print("This page doesn't have a cheatsheet")
-            _visited.append(_toVisit[0])
-            del _toVisit[0]
+            _visited.append(_toVisit)
+            del _toVisit
             continue
         
         cur_th = ''
@@ -104,8 +114,9 @@ if __name__ == '__main__':
                     pair[each.a.text]=None
                 print('\t',each.a.text, '----', pair[each.a.text])
                 bandRow[cur_th].append({'Value':each.a.text, 'Link':pair[each.a.text]})
-
-
+        for row in bandRow:
+            print(row)
+            print('\t', bandRow[row])
 
         sql_s = '''
             update visits
