@@ -12,6 +12,7 @@ Thumbs.db
 
 # dependencies
 /music-site/node_modules
+/music-site/bower_components
 
 # IDEs and editors
 /music-site/.idea

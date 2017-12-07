@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
 
 @Component({
     selector: 'app-index',
     templateUrl: './index.component.html',
     styleUrls: ['./index.component.css'],
 })
-export class IndexView implements OnInit {
+export class IndexView implements OnInit, AfterViewInit{
     bands: string[] = [];
 
     constructor(private http: HttpClient) {}
@@ -37,4 +38,70 @@ export class IndexView implements OnInit {
             .subscribe(); // Sends POST
         }
     }
+
+
+    // Init Cytoscape with Jquery
+    ngAfterViewInit(): void {
+       cytoscape({
+            container: document.getElementById('cy'), // container to render in
+            elements: [
+                { data: { id: 'a' } },
+                { data: { id: 'b' } },
+                { data: { id: 'c' } },
+                { data: { id: 'd' } },
+                { data: { id: 'e' } },
+                { data: { id: 'f' } },
+                {
+                    data: {
+                        id: 'ab',
+                        source: 'a',
+                        target: 'b'
+                    }
+                },
+                {
+                    data: {
+                        id: 'cd',
+                        source: 'c',
+                        target: 'd'
+                    }
+                },
+                {
+                    data: {
+                        id: 'ef',
+                        source: 'e',
+                        target: 'f'
+                    }
+                },
+                {
+                    data: {
+                        id: 'ac',
+                        source: 'a',
+                        target: 'c'
+                    }
+                },
+                {
+                    data: {
+                        id: 'be',
+                        source: 'b',
+                        target: 'e'
+                    }
+                }
+            ],
+            layout: {
+                name: 'cose'
+            },
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'width': '50%',
+                        'height': '50%',
+                        'background-color': 'red',
+                        'label': 'data(id)',
+                        'text-valign': 'center'
+                    }
+                }]
+        });
+    };
+
 }
