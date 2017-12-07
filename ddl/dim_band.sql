@@ -1,9 +1,9 @@
-drop table if exists dim_band;
+drop table if exists dim_band CASCADE;
 
 create table dim_band
 (
-    name varchar(50) primary key
-    ,genre varchar(50)
-    ,wiki_url varchar(50)
+    id SERIAL PRIMARY KEY
+    ,name varchar(256) UNIQUE NOT NULL
+    ,wiki_url varchar(256) UNIQUE
 )
 

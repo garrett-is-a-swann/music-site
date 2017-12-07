@@ -1,9 +1,8 @@
-drop table if exists fct_band_link;
+drop table if exists fct_band_link CASCADE;
 
 create table fct_band_link
 (
-    from_name varchar(50) NOT NULL
-    ,to_name varchar(50) NOT NULL
-    ,FOREIGN KEY (from_name) REFERENCES dim_band(name)
+    from_name varchar(256) NOT NULL
+    ,to_name varchar(256) NOT NULL
 )
 
