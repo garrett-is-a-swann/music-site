@@ -246,13 +246,15 @@ router.route('/bands')
                                     res.json({success: true, message: 'Added Link', json: _resp.rows[0]});
                                 }
                             })
-                    pool.query('INSERT into fct_user_band(userid, bandid, date_added) VALUES($1, $2, current_timestamp) ON CONFLICT DO NOTHING RETURNING *', [req.session.user.user_id, resp.rows[0].id],
-                        (_e, _resp) => {
-                            if(_e) {
-                                console.log(_e.stack);
-                                res.json({success: false, message: 'Something went wrong'});
-                            }
-                        })
+                    if(req.session.user) {
+                        pool.query('INSERT into fct_user_band(userid, bandid, date_added) VALUES($1, $2, current_timestamp) ON CONFLICT DO NOTHING RETURNING *', [req.session.user.user_id, resp.rows[0].id],
+                            (_e, _resp) => {
+                                if(_e) {
+                                    console.log(_e.stack);
+                                    res.json({success: false, message: 'Something went wrong'});
+                                }
+                            })
+                        }
                     }
                 }
             })

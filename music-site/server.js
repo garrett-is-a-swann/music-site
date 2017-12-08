@@ -32,7 +32,7 @@ app.get('*', (req, res) => {
 });
 
 // Store port in Express
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || '80';
 app.set('port', port);
 
 // Create HTTP server
