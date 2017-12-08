@@ -62,9 +62,9 @@ export class FormComponent implements OnInit {
                 console.log(errors)
                 console.log(data)
                 console.log(data['username'])
-                this.config.fields.username.error = data.username?data.username:'';
-                this.config.fields.email.error = data.email?data.email:'';
-                this.config.fields.password.error= data.password?data.password:'';
+                this.config.fields.username.error = !data.success?data.errors.username:'';
+                this.config.fields.email.error = !data.success?data.errors.email:'';
+                this.config.fields.password.error= !data.success?data.errors.password:'';
                 console.log(this.config.fields.username.error, this.config.fields.email.error, this.config.fields.password.error)
 
             }); // Sends POST

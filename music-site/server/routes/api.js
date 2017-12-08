@@ -154,7 +154,7 @@ router.route('/register')
                     }
 
                     if(Object.keys(errors).length) {
-                        res.send(errors);
+                        res.status(400).send({success: false, message: 'User created', errors: errors})
                     }
                     else {
                         pool.query('INSERT INTO dim_user (email, date_created)'
