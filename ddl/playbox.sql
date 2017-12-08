@@ -1,3 +1,23 @@
+
+SELECT
+    b.name
+    ,string_agg(g.name, '|') as genres
+FROM 
+    dim_genre g
+    join fct_band_genre bg
+        on g.id = bg.genreid
+    join dim_band b
+        on b.id = bg.bandid
+    right join fct_user_band bu
+        on b.id = bu.bandid
+WHERE
+    bu.userid = 1
+GROUP BY
+    b.name
+
+
+
+/*
 SELECT
     b.name
     ,string_agg(g.name, '|') as genres
@@ -54,3 +74,4 @@ GROUP BY
 ["The Nightwatchman","folk rock"],
 ["Volbeat","psychobilly|heavy metal|hard rock"],
 ["WAKRAT","hard rock|alternative rock|punk rock"]]
+*/

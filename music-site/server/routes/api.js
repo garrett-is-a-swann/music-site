@@ -187,11 +187,11 @@ router.use((req, res, next) => {
     if (req.session && req.session.user) {
         pool.query('Select * from fct_user_login where username = $1', [req.session.user.username], (e, resp) => {
             if ( resp.rows.length ) {
-                req.user = user;
+                //req.user = user;
                 delete req.session.user.password_hash;
                 delete req.session.user.password_salt;
                 req.session.user = user;  //refresh the session value
-                res.locals.user = user;
+                //res.locals.user = user;
             }
             // finishing processing the middleware and run the route
             next();
@@ -213,12 +213,12 @@ router.route('/bands')
         next();
     })
     .get((req, res, next) => {
-        pool.query('select * from dim_band;', (e, resp) => {
-            if(e){
-                console.log(err.stack);
+        pool.query("SELECT b.name ,string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid right join fct_user_band bu on b.id = bu.bandid WHERE bu.userid = $1 GROUP BY b.name", [req.session.user.user_id], (e, resp) => {
+            if(e) {
+                console.log(e.stack);
             }
             else {
-                res.send(resp.rows);
+                res.json({success: true, message: 'All links', json: resp.rows});
             }
         })
     })
@@ -240,7 +240,7 @@ router.route('/bands')
                                 }
                                 else {
                                     console.log(_resp.rows[0])
-                                    res.json({success: false, message: 'Added Link', json: _resp.rows[0]});
+                                    res.json({success: true, message: 'Added Link', json: _resp.rows[0]});
                                 }
                             })
                     pool.query('INSERT into fct_user_band(userid, bandid, date_added) VALUES($1, $2, current_timestamp) ON CONFLICT DO NOTHING RETURNING *', [req.session.user.user_id, resp.rows[0].id],

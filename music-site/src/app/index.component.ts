@@ -12,12 +12,13 @@ export class IndexView implements OnInit, AfterViewInit{
     constructor(private http: HttpClient) {}
 
     ngOnInit(): void {
-        this.http.get('/api/bands').subscribe(data => {
-            //console.log(data)
+        console.log('memes');
+        this.http.get('/api/bands').subscribe((data:any) => {
+            console.log(data)
             for(var index in data)
             {
-                //console.log(data[index])
-                this.bands.push(data[index]['name'])
+                console.log(data[index])
+                this.bands.push(data.json[index]['name'])
             }
         });
     }
@@ -100,8 +101,11 @@ export class IndexView implements OnInit, AfterViewInit{
         }).subscribe((data:any) => {
             console.log(data)
             this.bandError = data.json?data.message:'';
-            this.bandJSON = data.json?data.json:'';
-            console.log(this.bandJSON);
+            if(data.success) {
+                this.bandJSON = data.json;
+                console.log(this.bandJSON);
+                this.JSONARRAY.push(data.json)
+            }
         });
 
        /* this.http.get('/api/bands', function()
