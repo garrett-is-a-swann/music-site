@@ -26,6 +26,7 @@ export class IndexView implements OnInit, AfterViewInit{
     userInput = '';
     band_object = '';
     bandError = '';
+    bandJSON = {};
 
     cy = undefined;
 
@@ -95,9 +96,12 @@ export class IndexView implements OnInit, AfterViewInit{
         this.http.post('/api/bands',
         // Build POST to send
         {
-            band:this.band_object
+            name:this.userInput
         }).subscribe((data:any) => {
-            this.bandError = data.band?data.band:'';
+            console.log(data)
+            this.bandError = data.json?data.message:'';
+            this.bandJSON = data.json?data.json:'';
+            console.log(this.bandJSON);
         });
 
        /* this.http.get('/api/bands', function()

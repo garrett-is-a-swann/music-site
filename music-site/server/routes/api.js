@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const config = require('./config.conf');
+const config = require('./config.json');
 
 const jwt = require('jsonwebtoken');
 
@@ -213,39 +213,47 @@ router.route('/bands')
         next();
     })
     .get((req, res, next) => {
-        pool.query('select * from dim_band;')
-            .then(resp => {
-                res.send(resp.rows);
-            })
-            .catch(err => {
+        pool.query('select * from dim_band;', (e, resp) => {
+            if(e){
                 console.log(err.stack);
-            });
+            }
+            else {
+                res.send(resp.rows);
+            }
+        })
     })
     .post((req, res, next) => {
-        const values = [];
-        values.push(req.body.name);
         console.log(req.body.name);
-
-        pool.query('SELECT id, name FROM dim_band WHERE name = $1', values)
-            .then(resp=> {
+        pool.query('SELECT id, name FROM dim_band WHERE name = $1', [req.body.name], (e, resp) => {
+            if(e){
+                console.log(e.stack);
+            }
+            else {
                 console.log(resp.rows);
                 if(resp.rows.length) {
-                    pool.query(
-                            'INSERT into dim_band_link(account_id, bandname) VALUES($1, $2) RETURNING *'
-                            , values)
-                        .then(_resp => {
-                            
+                    console.log(req.session.user)
+                    pool.query("SELECT b.name, string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid WHERE b.name = $1 GROUP BY b.name",
+                            [req.body.name], (_e, _resp) => {
+                                if(_e) {
+                                    console.log(_e.stack);
+                                    res.json({success: false, message: 'Something went wrong'});
+                                }
+                                else {
+                                    console.log(_resp.rows[0])
+                                    res.json({success: false, message: 'Added Link', json: _resp.rows[0]});
+                                }
+                            })
+                    pool.query('INSERT into fct_user_band(userid, bandid, date_added) VALUES($1, $2, current_timestamp) ON CONFLICT DO NOTHING RETURNING *', [req.session.user.user_id, resp.rows[0].id],
+                        (_e, _resp) => {
+                            if(_e) {
+                                console.log(_e.stack);
+                                res.json({success: false, message: 'Something went wrong'});
+                            }
                         })
-                        .catch(_e => {
-                            console.log(_e.stack);
-                        });
-
+                    }
                 }
             })
-            .catch(e => {
-                console.log(e.stack);
-            });
-    })
+        })
     .put((req, res, next) => {
         next(new Error('Not implemented'));
     })
