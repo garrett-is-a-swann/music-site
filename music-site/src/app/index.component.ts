@@ -63,7 +63,7 @@ export class IndexView implements OnInit, AfterViewInit{
        this.cy = cytoscape({
             container: document.getElementById('cy'), // container to render in
             layout: {
-                name: 'cose'
+                name: 'cose-bilkent'
             },
             style: [
                 {
@@ -129,7 +129,7 @@ export class IndexView implements OnInit, AfterViewInit{
             dist_node.data('parent', 'a');
 
             this.cy.layout({
-                name: 'cose',
+                name: 'cose-bilkent',
                 fit: true,
                 nodeRepulsion: 650000,
                 gravity: 4,
@@ -222,7 +222,7 @@ export class IndexView implements OnInit, AfterViewInit{
                 
             }
             this.cy.layout({
-                name: 'cose'
+                name: 'cose-bilkent'
             }).run();
         }
 
