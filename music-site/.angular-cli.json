@@ -21,7 +21,7 @@
       "styles": [
         "styles.css"
       ],
-      "scripts": ["../bower_components/cytoscape/dist/cytoscape.js"],
+      "scripts": ["../bower_components/cytoscape/dist/cytoscape.js","../bower_components/cytoscape-cose-bilkent/cytoscape-cose-bilkent.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
