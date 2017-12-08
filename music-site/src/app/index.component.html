@@ -12,32 +12,19 @@
 
     <div class="container mt-2 mb-5">
         <div class="col mx-auto">
-        <div class="row justify-content-center">
-        <button class="button" style="outline:0;" (click)="myFunction(typingBox.value)">Add</button>
-        <input #typingBox [(ngModel)]="userInput" placeholder="Band Name" list="suggestions">
-        <datalist id="suggestions">
-            <option value="Ataxia">
-            <option value="Audioslave">
-            <option value="Axis of Justice">
-            <option value="Dominus">
-            <option value="Future User">
-            <option value="Jane's Addiction">
-            <option value="John Frusciante">
-            <option value="One Day as a Lion">
-            <option value="Prophets of Rage">
-            <option value="Rage Against the Machine">
-            <option value="Red Hot Chili Peppers">
-            <option value="Soundgarden">
-            <option value="Street Sweeper Social Club">
-            <option value="System of a Down">
-            <option value="Temple of the Dog">
-            <option value="The Last Internationale">
-            <option value="The Mars Volta">
-            <option value="The Nightwatchman">
-            <option value="Volbeat">
-            <option value="WAKRAT">
-        </datalist>
+            <div class="row justify-content-center">
+                <button class="button" style="outline:0;" (click)="myFunction()">Add</button>
+                <input #typingBox [(ngModel)]="userInput" placeholder="Band Name" list="suggestions">
+                <datalist id="suggestions" >
+                    <option *ngFor="let band of addedBands" value="{{band}}"> 
+                </datalist>
+            </div>
         </div>
+    </div>
+    <div class="container mt-2 mb-5">
+        <h3>Your Bands</h3>
+        <div *ngFor="let band of addedBands">
+            {{band}}
         </div>
     </div>
 

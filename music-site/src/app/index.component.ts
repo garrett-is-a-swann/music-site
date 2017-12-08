@@ -9,9 +9,83 @@ import { HttpClient } from '@angular/common/http';
 export class IndexView implements OnInit, AfterViewInit{
     constructor(private http: HttpClient) {}
 
+    ngOnInit(): void {
+        console.log('memes');
+        this.http.get('/api/bands').subscribe((data:any) => {
+            console.log(data)
+            if(data.success) {
+                for(var i = 0; i < data.json.length; i++) {
+                    this.graphPush(data.json[i].name, data.json[i].genres)
+                }
+            }
+        });
+    }
+
+
+    userInput = '';
+    addedBands = [];
+    bandError = '';
+
+    cy = undefined;
+
+    // Init Cytoscape with Jquery
+    ngAfterViewInit(): void {
+        this.cy = cytoscape({
+            container: document.getElementById('cy'), // container to render in
+            layout: {
+                name: 'cose-bilkent',
+                fit: true,             
+                padding: 5,            
+                randomize: true,     
+                nodeRepulsion: 200000,   
+                idealEdgeLength: 400,    
+                edgeElasticity: 0.9,       
+                nestingFactor: 0.9,        
+                gravity: 0.4,             
+                numIter: 2500,        
+                tile: true,                
+                animate: true,             
+                tilingPaddingVertical: 80,  
+                tilingPaddingHorizontal: 80
+            },
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'width': '50%',
+                        'height': '50%',
+                        'background-color': 'red',
+                        'label': 'data(id)',
+                        'text-valign': 'center'
+                    }
+                }]
+        });
+
+    };
+
+    myFunction() {
+        console.log(this.addedBands)
+        this.bandError = '';
+        this.http.post('/api/bands',
+            // Build POST to send
+            {
+                name:this.userInput
+            }).subscribe((data:any) => {
+                console.log(data)
+                if(data.success) {
+                    this.graphPush(data.json.name, data.json.genres);
+                }
+                else {
+                    this.bandError = data.message;
+                }
+            });
+        this.userInput = '';
+    }
+
     graphPush(band_name:string, genre_psv:string): void {
         // Simplify String
         var condensed_input = band_name.replace(/\s/g, '').toLowerCase();
+        this.addedBands.push(band_name);
 
         //PARSES GENRE STRINGS FROM BAND AND LOADS THEM INTO INTO ARRAY 'genres'
         let genres: string[] = genre_psv.split('|');
@@ -154,80 +228,5 @@ export class IndexView implements OnInit, AfterViewInit{
                 tilingPaddingHorizontal: 80
             }).run();
         }
-
     }
-
-
-
-    ngOnInit(): void {
-        console.log('memes');
-        this.http.get('/api/bands').subscribe((data:any) => {
-            console.log(data)
-            if(data.success) {
-                for(var i = 0; i < data.json.length; i++) {
-                    this.graphPush(data.json[i].name, data.json[i].genres)
-                }
-            }
-        });
-    }
-
-
-    userInput = '';
-    bandError = '';
-
-    cy = undefined;
-
-    // Init Cytoscape with Jquery
-    ngAfterViewInit(): void {
-        this.cy = cytoscape({
-            container: document.getElementById('cy'), // container to render in
-            layout: {
-                name: 'cose-bilkent',
-                fit: true,             
-                padding: 5,            
-                randomize: true,     
-                nodeRepulsion: 200000,   
-                idealEdgeLength: 400,    
-                edgeElasticity: 0.9,       
-                nestingFactor: 0.9,        
-                gravity: 0.4,             
-                numIter: 2500,        
-                tile: true,                
-                animate: true,             
-                tilingPaddingVertical: 80,  
-                tilingPaddingHorizontal: 80
-            },
-            style: [
-                {
-                    selector: 'node',
-                    style: {
-                        'width': '50%',
-                        'height': '50%',
-                        'background-color': 'red',
-                        'label': 'data(id)',
-                        'text-valign': 'center'
-                    }
-                }]
-        });
-
-    };
-
-    myFunction(input) {
-        this.bandError = '';
-        this.http.post('/api/bands',
-            // Build POST to send
-            {
-                name:this.userInput
-            }).subscribe((data:any) => {
-                console.log(data)
-                if(data.success) {
-                    this.graphPush(data.json.name, data.json.genres);
-                }
-                else {
-                    this.bandError = data.message;
-                }
-            });
-        this.userInput = '';
-    }
-
 }
