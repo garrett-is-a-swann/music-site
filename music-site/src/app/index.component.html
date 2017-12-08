@@ -6,24 +6,37 @@
 
     <div class="container">
         <div class="row justify-content-center">
-                <div id="cy" style="height:500px; width:700px; border:2px solid;"></div>
+                <div id="cy" style="height:440px; width:800px; border:2px solid;"></div>
         </div>
     </div>
 
-    <!--<p>BANDS:</p>
-    <li *ngFor="let band of bands">
-        {{ band }}
-    </li>-->
-
-    <div class="container mt-3 pb-5">
+    <div class="container mt-2 mb-5">
         <div class="col mx-auto">
         <div class="row justify-content-center">
-        <p>Add a new band:</p>
-        </div>
-        <div class="row justify-content-center">
-        <p>{{typed}}</p>
         <button class="button" style="outline:0;" (click)="myFunction(typingBox.value)">Add</button>
-        <input #typingBox (keyup.enter)="onKey(typingBox.value, false)" (blur)="onKey(event)" placeholder="Band Name">
+        <input #typingBox [(ngModel)]="userInput" placeholder="Band Name" list="suggestions">
+        <datalist id="suggestions">
+            <option value="Ataxia">
+            <option value="Audioslave">
+            <option value="Axis of Justice">
+            <option value="Dominus">
+            <option value="Future User">
+            <option value="Jane's Addiction">
+            <option value="John Frusciante">
+            <option value="One Day as a Lion">
+            <option value="Prophets of Rage">
+            <option value="Rage Against the Machine">
+            <option value="Red Hot Chili Peppers">
+            <option value="Soundgarden">
+            <option value="Street Sweeper Social Club">
+            <option value="System of a Down">
+            <option value="Temple of the Dog">
+            <option value="The Last Internationale">
+            <option value="The Mars Volta">
+            <option value="The Nightwatchman">
+            <option value="Volbeat">
+            <option value="WAKRAT">
+        </datalist>
         </div>
         </div>
     </div>

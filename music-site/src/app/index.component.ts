@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-
 @Component({
     selector: 'app-index',
     templateUrl: './index.component.html',
@@ -22,9 +21,11 @@ export class IndexView implements OnInit, AfterViewInit{
             }
         });
     }
-    title = 'app';
 
-    typed = ''
+
+    userInput = '';
+    band_object = '';
+    bandError = '';
 
     cy = undefined;
 
@@ -50,20 +51,25 @@ export class IndexView implements OnInit, AfterViewInit{
         ["WAKRAT","hard rock|alternative rock|punk rock"],
         ["fuck", "fucking rock n' roll, bitch"]];
 
-    onKey(enter) {
-        /*for(var i = 0; i < this.JSONARRAY.length; i++) {
-            var obj = this.JSONARRAY[i];
-            console.log(obj[0]);
-        }*/
-    }
-    
-
     // Init Cytoscape with Jquery
     ngAfterViewInit(): void {
        this.cy = cytoscape({
             container: document.getElementById('cy'), // container to render in
             layout: {
-                name: 'cose-bilkent'
+                name: 'cose-bilkent',
+                fit: true,             
+                padding: 5,            
+                randomize: true,     
+                nodeRepulsion: 200000,   
+                idealEdgeLength: 400,    
+                edgeElasticity: 0.9,       
+                nestingFactor: 0.9,        
+                gravity: 0.4,             
+                numIter: 2500,        
+                tile: true,                
+                animate: true,             
+                tilingPaddingVertical: 80,  
+                tilingPaddingHorizontal: 80
             },
             style: [
                 {
@@ -82,12 +88,35 @@ export class IndexView implements OnInit, AfterViewInit{
 
     myFunction(input) {
 
+        
+        //document.getElementById("typingBox").value = "";
+
+        this.bandError = '';
+        this.http.post('/api/bands',
+        // Build POST to send
+        {
+            band:this.band_object
+        }).subscribe((data:any) => {
+            this.bandError = data.band?data.band:'';
+        });
+
+       /* this.http.get('/api/bands', function()
+        // Build GET to send
+        {
+            band:input
+        }).subscribe((data:any) => {
+            this.bandError = data.band?data.band:'';
+        }); */
+
+
         //FINDS BAND FROM JSON OBJECT
+        var condensed_input = input.replace(/\s/g, '').toLowerCase();
+        console.log(condensed_input);
         var band_exists = false;
         for(var i = 0; i < this.JSONARRAY.length; i++) {
             var obj = this.JSONARRAY[i];
             var genres_string = "";
-            if(input == obj[0]) {
+            if(condensed_input == obj[0].replace(/\s/g, '').toLowerCase()) {
                 band_exists = true;
                 console.log(obj[0]);
                 genres_string = obj[1];
@@ -98,6 +127,7 @@ export class IndexView implements OnInit, AfterViewInit{
             console.log("Band \""+input+"\" does not exist.");
             return;
         }
+        this.userInput = '';
 
         //PARSES GENRE STRINGS FROM BAND AND LOADS THEM INTO INTO ARRAY 'genres'
         var genres = genres_string.split('|');
@@ -108,9 +138,10 @@ export class IndexView implements OnInit, AfterViewInit{
             if(this.cy.$id(node_name).isNode()) {
                 var node = this.cy.$id(node_name);
                 var w = parseInt(node.renderedStyle('width'));
-                node.style('width', (w+10)+'%');
-                node.style('height', (w+10)+'%');
-                //node.style('padding', (parseInt(node.renderedStyle('padding'))+10)+'px')
+                var fs = parseInt(node.renderedStyle('font-size'));
+                node.style('width', (w+30)+'%');
+                node.style('height', (w+30)+'%');
+                node.style('font-size', fs+8+'%');
             }
             else {
                 this.cy.add({
@@ -130,13 +161,22 @@ export class IndexView implements OnInit, AfterViewInit{
 
             this.cy.layout({
                 name: 'cose-bilkent',
-                fit: true,
-                nodeRepulsion: 650000,
-                gravity: 4,
-                padding: 10
-            }).run();
-            this.cy.resize();
-            this.cy.fit();
+                fit: true,             
+                padding: 5,            
+                randomize: true,     
+                nodeRepulsion: 200000,   
+                idealEdgeLength: 400,    
+                edgeElasticity: 0.9,       
+                nestingFactor: 0.9,        
+                gravity: 0.4,             
+                numIter: 2500,        
+                tile: true,                
+                animate: true,             
+                tilingPaddingVertical: 80,  
+                tilingPaddingHorizontal: 80
+                }).run();
+                this.cy.resize();
+                this.cy.fit();
         }
         else {
         
@@ -158,9 +198,9 @@ export class IndexView implements OnInit, AfterViewInit{
                             var node = this.cy.$id(a_node_name);
                             var w = parseInt(node.renderedStyle('width'));
                             var fs = parseInt(node.renderedStyle('font-size'));
-                            node.style('width', (w+15)+'%');
-                            node.style('height', (w+15)+'%');
-                            node.style('font-size', fs+3+'%');
+                            node.style('width', (w+30)+'%');
+                            node.style('height', (w+30)+'%');
+                            node.style('font-size', fs+8+'%');
                         }
                         else {
                             if(!this.cy.$id(a_node_name).isNode()) {
@@ -180,9 +220,9 @@ export class IndexView implements OnInit, AfterViewInit{
                             var node = this.cy.$id(b_node_name);
                             var w = parseInt(node.renderedStyle('width'));
                             var fs = parseInt(node.renderedStyle('font-size'));
-                            node.style('width', (w+15)+'%');
-                            node.style('height', (w+15)+'%');
-                            node.style('font-size', fs+3+'%');
+                            node.style('width', (w+30)+'%');
+                            node.style('height', (w+30)+'%');
+                            node.style('font-size', fs+8+'%');
                         }
                         else {
                             if(!this.cy.$id(b_node_name).isNode()) {
@@ -203,18 +243,13 @@ export class IndexView implements OnInit, AfterViewInit{
 
                         if(this.cy.$id(a_node_name+"/"+b_node_name).isEdge() == false && 
                             this.cy.$id(b_node_name+"/"+a_node_name).isEdge() == false) {
-                         //   alert("shit do not exist");
                             this.cy.add({
                                 data: {
                                     id: a_node_name + '/' + b_node_name,
                                     source: a_node_name,
                                     target: b_node_name,
-                                    /*style: {'source-distance-from-node': '100%',
-                                        'target-distance-from-node': '100%'
-                                    }*/
                                 }
                             });
-                            //if(this.cy.$id(a_node_name
                         }
 
                     }
@@ -222,100 +257,47 @@ export class IndexView implements OnInit, AfterViewInit{
                 
             }
             this.cy.layout({
-                name: 'cose-bilkent'
+                name: 'cose-bilkent',
+                fit: true,             
+                padding: 5,            
+                randomize: true,     
+                nodeRepulsion: 200000,   
+                idealEdgeLength: 400,    
+                edgeElasticity: 0.9,       
+                nestingFactor: 0.9,        
+                gravity: 0.4,             
+                numIter: 2500,        
+                tile: true,                
+                animate: true,             
+                tilingPaddingVertical: 80,  
+                tilingPaddingHorizontal: 80
             }).run();
         }
 
-        /*JUST ADDING NODE A
-        if(b_node_name == "" && a_node_name != "") {
-            if(this.cy.$id(a_node_name).isNode()) {
-                var node = this.cy.$id(a_node_name);
-                var w = parseInt(node.renderedStyle('width'));
-                node.style('width', (w+10)+'%');
-                node.style('height', (w+10)+'%');
-                node.style('padding', (parseInt(node.renderedStyle('padding'))+10)+'px')
-            }
-            else {
-                this.cy.add({
-                data: { id: a_node_name },
-                style: {'background-color': 'green',
-                        'height': '65%',
-                        'width': '65%'}
-                });
-            }
-            this.cy.fit();
-            var dist_node = this.cy.$id('9');
-            dist_node.data('parent', 'a');
-           // alert(dist_node.isParent());
-        }
-
-        /*JUST ADDING NODE B
-        if(a_node_name == "" && b_node_name != "") {
-            if(this.cy.$id(b_node_name).isNode()) {
-                var node = this.cy.$id(b_node_name);
-                var w = parseInt(node.renderedStyle('width'));
-                node.style('width', (w+10)+'%');
-                node.style('height', (w+10)+'%');
-            }
-            else {
-                this.cy.add({
-                data: { id: b_node_name },
-                style: {'background-color': 'green',
-                        'height': '65%',
-                        'width': '65%'}
-                });
-            }
-            this.cy.fit();
-        }
-
-        /*ADDING BOTH NODE A AND B WITH EDGE(A,B)
-        if(a_node_name != "" && b_node_name != "") {
-            if(this.cy.$id(a_node_name).isNode()) {
-                var node = this.cy.$id(a_node_name);
-                var w = parseInt(node.renderedStyle('width'));
-                node.style('width', (w+10)+'%');
-                node.style('height', (w+10)+'%');
-            }
-            else {
-                this.cy.add({
-                data: { id: a_node_name },
-                style: {'background-color': 'green',
-                        'height': '65%',
-                        'width': '65%'}
-                });
-            }
-            if(this.cy.$id(b_node_name).isNode()) {
-                var node = this.cy.$id(b_node_name);
-                var w = parseInt(node.renderedStyle('width'));
-                node.style('width', (w+10)+'%');
-                node.style('height', (w+10)+'%');
-            }
-            else {
-                this.cy.add({
-                data: { id: b_node_name },
-                style: {'background-color': 'green',
-                        'height': '65%',
-                        'width': '65%'}
-                });
-            }
-            this.cy.fit();
-
-            if(this.cy.$id(a_node_name+"/"+b_node_name).isEdge() == false && 
-                this.cy.$id(b_node_name+"/"+a_node_name).isEdge() == false) {
-             //   alert("shit do not exist");
-                this.cy.add({
-                    data: {
-                        id: a_node_name + '/' + b_node_name,
-                        source: a_node_name,
-                        target: b_node_name
-                    }
-                });
-            }
-        }*/
-
+/*registerSubmit(): void {
+        console.log('asda')
+        this.usernameError = '';
+        this.email_addrError = '';
+        this.passwordError = '';
+        this.http.post('/api/register',
+        // Build POST to send
+        {
+            username:this.username
+            ,email:this.email_addr
+            ,password:this.password
+        })
+        .subscribe((data:any) => {
+            console.log(data)
+            console.log(data['username'])
+            this.usernameError = data.username?data.username:'';
+            this.email_addrError = data.email?data.email:'';
+            this.passwordError = data.password?data.password:'';
+        }); // Sends POST
+        console.log(this.usernameError)
+    }*/
+       
 
     }
-
 }
 
 
