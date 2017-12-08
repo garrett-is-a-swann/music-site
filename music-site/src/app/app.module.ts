@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Import our Components
 import { AppComponent } from './app.component';
@@ -31,6 +31,7 @@ import { AuthService } from './services/auth.service';
         BrowserModule,
         // Include it under 'imports' in your application module
         // after BrowserModule.
+        FormsModule,
         HttpClientModule,
         FormsModule
     ],
