@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "cytoscape": "^3.2.7"
+    "cytoscape": "^3.2.7",
+    "cytoscape-cose-bilkent": "^3.0.4"
   }
 }
