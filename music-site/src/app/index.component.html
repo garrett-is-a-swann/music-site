@@ -19,8 +19,8 @@
         </div>
         <div class="row justify-content-center">
         <p>{{typed}}</p>
-        <button class="button" style="outline:0;" (click)="onKey(typingBox.value, true)">Add</button>
-        <input #typingBox (keyup.enter)="onKey(typingBox.value, false)" (blur)="onKey(typingBox.value, false)" placeholder="Band Name">
+        <button class="button" style="outline:0;" (click)="myFunction(typingBox.value)">Add</button>
+        <input #typingBox (keyup.enter)="onKey(typingBox.value, false)" (blur)="onKey(event)" placeholder="Band Name">
         </div>
         </div>
     </div>
