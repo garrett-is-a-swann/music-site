@@ -187,10 +187,10 @@ router.use((req, res, next) => {
     if (req.session && req.session.user) {
         pool.query('Select * from fct_user_login where username = $1', [req.session.user.username], (e, resp) => {
             if ( resp.rows.length ) {
-                //req.user = user;
+                req.session.user.user_id = resp.rows[0].id
+                req.session.user.permission = resp.rows[0].permission
                 delete req.session.user.password_hash;
                 delete req.session.user.password_salt;
-                req.session.user = user;  //refresh the session value
                 //res.locals.user = user;
             }
             // finishing processing the middleware and run the route
@@ -200,6 +200,7 @@ router.use((req, res, next) => {
         next();
     }
 });
+
 
 
 // GET api listing 
@@ -213,14 +214,16 @@ router.route('/bands')
         next();
     })
     .get((req, res, next) => {
-        pool.query("SELECT b.name ,string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid right join fct_user_band bu on b.id = bu.bandid WHERE bu.userid = $1 GROUP BY b.name", [req.session.user.user_id], (e, resp) => {
-            if(e) {
-                console.log(e.stack);
-            }
-            else {
-                res.json({success: true, message: 'All links', json: resp.rows});
-            }
-        })
+        if (req.session && req.session.user) {
+            pool.query("SELECT b.name ,string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid right join fct_user_band bu on b.id = bu.bandid WHERE bu.userid = $1 GROUP BY b.name", [req.session.user.user_id], (e, resp) => {
+                if(e) {
+                    console.log(e.stack);
+                }
+                else {
+                    res.json({success: true, message: 'All links', json: resp.rows});
+                }
+            })
+        }
     })
     .post((req, res, next) => {
         console.log(req.body.name);

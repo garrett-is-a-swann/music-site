@@ -19,8 +19,15 @@ app.use('/api', api);
 // ADD MORE ROUTES HERE.. * COMES LAST
 
 
+
+
 // Catch all other routes and return index file for now
 app.get('*', (req, res) => {
+    if (!req.user) {
+        res.redirect('/login');
+    } else {
+        next();
+    }
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
