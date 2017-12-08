@@ -23,9 +23,11 @@
     "@angular/router": "^4.2.4",
     "@types/cytoscape": "^3.1.4",
     "body-parser": "^1.18.2",
+    "client-sessions": "^0.8.0",
     "core-js": "^2.4.1",
     "cytoscape": "^3.2.7",
     "express": "^4.16.1",
+    "jsonwebtoken": "^8.1.0",
     "pg": "^7.3.0",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14"

@@ -2,6 +2,7 @@ const express = require('express'); // duh
 const path = require('path'); // Loads pathing
 const http = require('http'); // Loads HTTP
 const bodyParser = require('body-parser'); // This is middleware to bind angular to our express server.
+const jwt = require('jsonwebtoken');
 
 const api = require('./server/routes/api');
 

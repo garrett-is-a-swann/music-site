@@ -3,13 +3,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
 
 // Import our Components
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login.component';
 import { RegisterComponent } from './register.c';
 import { ProfileComponent } from './profile.c';
 import { IndexView } from './index.component';
+import { LoginComponent } from './login/login';
+import { FormComponent } from './form/form';
+
+// Import Services
+import { AuthService } from './services/auth.service';
 
 
 @NgModule({ 
@@ -18,7 +23,8 @@ import { IndexView } from './index.component';
         LoginComponent,
         RegisterComponent,
         ProfileComponent,
-        IndexView
+        IndexView,
+        FormComponent
     ],
     imports: [
         AppRoutingModule,
@@ -26,9 +32,10 @@ import { IndexView } from './index.component';
         // Include it under 'imports' in your application module
         // after BrowserModule.
         HttpClientModule,
+        FormsModule
     ],
     exports: [ RouterModule ],
-    providers: [],
+    providers: [AuthService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

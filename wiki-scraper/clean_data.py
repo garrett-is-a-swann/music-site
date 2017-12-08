@@ -20,7 +20,7 @@ def main(conn_str, args):
     if args.rerun:
         reset(lconn, lcurse)
     
-    while False:
+    while True:
         try:
             sql_s = '''
                 select 
@@ -63,6 +63,7 @@ def main(conn_str, args):
                 SET name = EXCLUDED.name,
                     wiki_url = EXCLUDED.wiki_url
                 WHERE dbn.wiki_url = 'None'
+            RETURNING id
             ;
             '''
         pcurse.execute(sql_p, (band, link.lower()));

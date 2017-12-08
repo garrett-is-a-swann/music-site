@@ -1,7 +1,7 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LoginComponent }      from './login.component';
+import { LoginComponent }      from './login/login';
 import { RegisterComponent }      from './register.c';
 import { ProfileComponent }      from './profile.c';
 import { IndexView } from './index.component';

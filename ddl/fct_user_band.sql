@@ -2,12 +2,11 @@ drop table if exists fct_user_band;
 
 create table fct_user_band
 (
-    account_id BIGINT
-    ,tag_id BIGINT NOT NULL
-    ,band_name varchar(50) 
+    userid INT NOT NULL
+    ,bandid INT  NOT NULL
     ,date_added timestamp NOT NULL
 
-    ,FOREIGN KEY (account_id) REFERENCES dim_user (account_id)
-    ,FOREIGN KEY (band_name) REFERENCES dim_band (name)
+    ,FOREIGN KEY (userid) REFERENCES dim_user (id)
+    ,FOREIGN KEY (bandid) REFERENCES dim_band (id)
 )
 ;
