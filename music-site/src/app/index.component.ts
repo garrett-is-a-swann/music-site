@@ -115,21 +115,28 @@ export class IndexView implements OnInit, AfterViewInit{
             else {
                 this.cy.add({
                 data: { id: node_name },
-                style: {'background-color': 'green',
-                        'height': '65%',
-                        'width': '65%',
-                        'font-weight': '500',
-                        'background-opacity': '.55',
-                        'border-color': 'green',
-                        'border-width': '3px'}
+                style: {'background-color': '#A1E6A5',
+                            'height': '65%',
+                            'width': '65%',
+                            'font-size': '10%',
+                            'font-weight': '500',
+                            'border-color': 'green',
+                            'border-width': '3px'}
                 });
             }
             this.cy.fit();
             var dist_node = this.cy.$id('9');
             dist_node.data('parent', 'a');
+
             this.cy.layout({
-                name: 'cose'
+                name: 'cose',
+                fit: true,
+                nodeRepulsion: 650000,
+                gravity: 4,
+                padding: 10
             }).run();
+            this.cy.resize();
+            this.cy.fit();
         }
         else {
         
@@ -159,12 +166,11 @@ export class IndexView implements OnInit, AfterViewInit{
                             if(!this.cy.$id(a_node_name).isNode()) {
                                 this.cy.add({
                                 data: { id: a_node_name },
-                                style: {'background-color': 'green',
+                                style: {'background-color': '#A1E6A5',
                                         'height': '65%',
                                         'width': '65%',
                                         'font-size': '10%',
                                         'font-weight': '500',
-                                        'background-opacity': '.55',
                                         'border-color': 'green',
                                         'border-width': '3px'}
                                 });
@@ -182,18 +188,18 @@ export class IndexView implements OnInit, AfterViewInit{
                             if(!this.cy.$id(b_node_name).isNode()) {
                                 this.cy.add({
                                 data: { id: b_node_name },
-                                style: {'background-color': 'green',
+                                style: {'background-color': '#A1E6A5',
                                         'height': '65%',
                                         'width': '65%',
                                         'font-size': '10%',
                                         'font-weight': '500',
-                                        'background-opacity': '.55',
                                         'border-color': 'green',
                                         'border-width': '3px'}
                                 });
                             }
                         }
                         this.cy.fit();
+                        
 
                         if(this.cy.$id(a_node_name+"/"+b_node_name).isEdge() == false && 
                             this.cy.$id(b_node_name+"/"+a_node_name).isEdge() == false) {
@@ -203,21 +209,21 @@ export class IndexView implements OnInit, AfterViewInit{
                                     id: a_node_name + '/' + b_node_name,
                                     source: a_node_name,
                                     target: b_node_name,
-                                    style: {'source-distance-from-node': '1000px',
-                                        'target-endpoint': '2px'
-                                    }
+                                    /*style: {'source-distance-from-node': '100%',
+                                        'target-distance-from-node': '100%'
+                                    }*/
                                 }
                             });
+                            //if(this.cy.$id(a_node_name
                         }
-                        this.cy.layout({
-                            name: 'cose'
-                        }).run();
-
 
                     }
                 }
                 
             }
+            this.cy.layout({
+                name: 'cose'
+            }).run();
         }
 
         /*JUST ADDING NODE A
