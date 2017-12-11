@@ -40,4 +40,16 @@ export class ProfileComponent implements OnInit {
             b.style.display = "none";
         }
     }
+
+    showForm() {
+        var x = document.getElementById("newGraph");
+        var y = document.getElementById("newGraphButton");
+        if (x.style.display == "none") {
+            x.style.display = "block";
+            y.style.display = "block";
+        } else {
+            x.style.display = "none";
+            y.style.display = "none";
+        }
+    }
 }

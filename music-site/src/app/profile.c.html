@@ -1,14 +1,73 @@
-<div class= "container col-8 col-xl-7">
+<div class= "container col-sm-10 col-md-10 col-lg-10 col-xl-9">
 	<div class="card">
-		<div class="card-header">
-			{{title}}
-		</div>
 		<div class="card-body">
-			<button onclick="myFunction()" type="button" class="btn-dark" style="outline:0; width:40px; height:20px; padding:1px 1px; font-size:12px;" (click)="myFunction()">Edit</button> Username: {{username}}
-			<div class="row ml-3 mt-2">
-				<input id="ChangeUser" style="display:none">
-				<button class="btn btn-danger btn-sm" id="ChangeUserButton" style="display:none">Change</button>
+			<h5 class="card-title text-center pb-4">
+				Hello, {{title}}
+			</h5>
+
+			<div class="row">
+
+				<div class= "container col-sm-8 col-md-8 col-lg-8 col-xl-8">
+					<div class="card">
+						<div class="card-header py-1" style="height:30px">
+							<b>Bands</b>
+						</div>
+						<div class="card-body">
+
+						</div>
+					</div>	
+				</div>
+
+				<div class="col">
+					<div class="row pb-4">
+					    <div class="col">
+					      <div class="list-group">
+					        <a class="list-group-item list-group-item-action active pt-1" style="height:35px;" data-toggle="list" href="">Graph1</a>
+					        <a class="list-group-item list-group-item-action pt-1" style="height:35px;" data-toggle="list" href="">Graph2</a>
+					        <a class="list-group-item list-group-item-action pt-1" style="height:35px;" data-toggle="list" href="">Graph3</a>
+					        <a class="list-group-item list-group-item-action pt-1" style="height:35px;" data-toggle="list" href="">Graph3</a>
+					      </div>
+					    </div>
+					</div>
+					<div class="row justify-content-center">
+						<div class="col col-sm-8 col-md-10 col-lg-10 col-xl-10">
+							<div class="row pb-3">
+								<button style="border-style:solid; border-width:1px;" type="button" class="btn btn-secondary btn-sm btn-block" (click)="showForm()"><font size="3">New Graph</font></button>
+							</div>
+							<div class="row">
+								<div class="col px-0">
+									<input id="newGraph" style="display:none;">
+								</div>
+								<div class="col px-0">
+									<button id="newGraphButton" type="button" class="btn-success" style="display:none; height:30px; background-color:">Create</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+
+						</div>
+					</div>
+				</div>
+
 			</div>
+
 		</div>
 	</div>
+
 </div>
+
+<script>
+
+	
+
+</script>
+
+
+
+<!--<button onclick="myFunction()" type="button" class="btn-dark" style="outline:0; width:40px; height:20px; padding:1px 1px; font-size:12px;" (click)="myFunction()">Edit</button> Username: {{username}}
+						<div class="row ml-3 mt-2">
+							<input id="ChangeUser" style="display:none">
+							<button class="btn btn-danger btn-sm" id="ChangeUserButton" style="display:none">Change</button>
+						</div>-->
