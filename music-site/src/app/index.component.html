@@ -4,23 +4,29 @@
         Genre Graph
     </h4>
 
-    <div class="container">
-        <div class="row justify-content-center">
-                <div id="cy" style="height:440px; width:800px; border:2px solid;"></div>
-        </div>
-    </div>
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="row justify-content-center pb-2">
+                <div id="cy" style="height:440px; border:2px solid;"></div>
+            </div>
 
-    <div class="container mt-2 mb-5">
-        <div class="col mx-auto">
-            <div class="row justify-content-center">
-                <button class="button" style="outline:0;" (click)="myFunction()">Add</button>
-                <input #typingBox [(ngModel)]="userInput" placeholder="Band Name" list="suggestions">
-                <datalist id="suggestions" >
-                    <option *ngFor="let band of addedBands" value="{{band}}"> 
-                </datalist>
+            <div class="row mt-2 mb-3">
+                <div class="col col-auto px-0 mx-0">
+                        <button style="outline:0; height:30px;" (click)="myFunction()">Add</button>
+                </div>
+                <div class="col px-0 mx-0">
+                    <input id="typingBox" #typingBox [(ngModel)]="userInput" placeholder="Band Name" list="suggestions">
+                    <datalist id="suggestions" >
+                    <option *ngFor="let band of addedBands" value="{{band}}"> </option>
+                    </datalist>
+                </div>
+                <div class="col col-auto align-self-end mx-0 px-0">
+                    <button type="button" style="height:30px;" class="btn btn-danger btn-sm" (click)="reSize()">Resize</button>
+                </div>
             </div>
         </div>
     </div>
+
     <div class="container mt-2 mb-5">
         <h3>Your Bands</h3>
         <div *ngFor="let band of addedBands">

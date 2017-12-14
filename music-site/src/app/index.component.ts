@@ -82,6 +82,11 @@ export class IndexView implements OnInit, AfterViewInit{
         this.userInput = '';
     }
 
+    reSize() {
+        this.cy.resize();
+        this.cy.fit();
+    }
+
     graphPush(band_name:string, genre_psv:string): void {
         // Simplify String
         var condensed_input = band_name.replace(/\s/g, '').toLowerCase();
