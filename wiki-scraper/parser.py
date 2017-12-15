@@ -4,10 +4,10 @@ from bs4 import BeautifulSoup
 import urllib 
 import sqlite3
 import argparse
+import re
+import sys
 
 
-argparser = argparse.ArgumentParser(description="Normal or Rerun")
-argparser.add_argument('--rerun', dest='rerun', action='store_true')
 
 pageURI = 'https://en.wikipedia.org'
 conn = sqlite3.connect('spider.db')
@@ -27,7 +27,7 @@ def main():
                                             visited = 0;
                                     ''').fetchone()
         except TypeError as e:
-            print(e.message)
+            print(e)
             print("Done!")
 
         bandR={}
@@ -230,9 +230,62 @@ def restart():
     conn.commit()
     
 
+def parseStdin():
+    possible_missing = []
+    for line in sys.stdin:
+        print(line.rstrip())
+        try:
+            r = requests.get(pageURI+'/wiki/'+line.rstrip())
+            soup = BeautifulSoup(r.text, 'lxml')
+            match = re.search(r'(/wiki/.+)',r.url)
+            if not match:
+                print("Not a page")
+                continue
+
+
+            # Is useable? 
+            table = soup.find('table', attrs={'class':'infobox vcard plainlist'})
+            if table is None:
+                table = soup.find('table', attrs={'class':'infobox biography vcard'})
+            content_rows = table.find_all('tr')
+            print('This page is useable')
+
+
+            # Get correct name spelling
+            heading = soup.find('h1', attrs={'class':'firstHeading'})
+
+            sql_s = '''
+                INSERT INTO visits
+                (
+                    band_link
+                    ,band_name
+                    ,visited
+                )
+                SELECT
+                    ?
+                    ,?
+                    ,0
+                where NOT EXISTS (
+                    SELECT 1 FROM visits WHERE band_link = ?)
+                ;
+                '''
+            print(sql_s, (match.group(),heading.text, match.group()))
+            curse.execute(sql_s, (match.group(),heading.text, match.group()))
+            print(curse.lastrowid)
+            conn.commit()
+        except KeyboardInterrupt:
+            raise
+        except Exception as e:
+            print("This page doesn't have a cheatsheet or can't be opened")
+            continue
+    
 
 if __name__ == '__main__':
+    argparser = argparse.ArgumentParser(description="Normal or Rerun")
+    argparser.add_argument('--rerun', dest='rerun', action='store_true')
     args=argparser.parse_args()
+
+    parseStdin()
 
     if args.rerun:
         restart()

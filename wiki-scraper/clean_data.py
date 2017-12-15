@@ -109,7 +109,8 @@ def main(conn_str, args):
                     dim_genre g
                 WHERE
                     b.name = %s
-                    and g.name = %s;
+                    and g.name = %s
+                ON CONFLICT (bandid, genreid) DO NOTHING;
             '''
             print(bgpair)
             pcurse.execute(sql_p, bgpair);
