@@ -14,22 +14,42 @@ export class ProfileComponent implements OnInit {
     //of default graph-list.
     ngOnInit(): void {
         //We will use array of user graphs here.
-        let graphs = ["Graph1", "Graph2", "Graph3", "Graph4"]; 
-        for (let i in graphs) {
-           console.log(graphs[i]);
-           if(i == "0") {
-                document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action active pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + graphs[i] + "</a>";
-           }
-           else {
-            document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + graphs[i] + "</a>";
+        var data_graphs;
+
+        this.http.get('/api/user').subscribe((data_graphs:any) => {
+            if(data_graphs.success) {
+                for(let entry in data_graphs.json.list) {
+                    console.log((data_graphs.json.list[entry]).id + ": " + (data_graphs.json.list[entry]).name);
+                    if((data_graphs.json.list[entry]).id == "0") {
+                        document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action active pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
+                    }
+                    else {
+                        document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
+                    }
+                }
             }
-        }
+            else {
+                console.log(data_graphs.message);
+            }
+        });
+
+        this.http.get('/api/user/' + data_graphs.json.userid + '/list/' + (data_graphs.json.lists[0]).id).subscribe((data_bands:any) => {
+            if(data_bands.success) {
+                for(let entry in data_bands.json.band) {
+                    console.log((data_bands.json.band[entry]).name + ": " + (data_bands.json.band[entry]).name);
+                    document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json.band[entry]).name + "</li>";
+                }
+            }
+            else {
+                console.log(data_bands.message);
+            }
+        });
 
         //This will be the array of Bands from the default graph
-        let bands = ["Red Hot Chili Peppers", "Ataxia", "Coheed and Cambria", "Queens of the Stone Age", "Royal Blood"];
+        /*let bands = ["Red Hot Chili Peppers", "Ataxia", "Coheed and Cambria", "Queens of the Stone Age", "Royal Blood"];
         for(let i in bands) {
-            document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + bands[i] + "</li>";
-        }
+            document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + bands[i] + "</li>"; 
+        }*/
 
     }
  
@@ -80,6 +100,14 @@ export class ProfileComponent implements OnInit {
     }
 
     addGraph() {
+
+        var graph_name = (<HTMLInputElement>document.getElementById("newGraph")).value
+
+        this.http.post('/api/user',
+        {
+            name:graph_name
+        });
+
         document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (<HTMLInputElement>document.getElementById("newGraph")).value + "</a>";
         (<HTMLInputElement>document.getElementById("newGraph")).value = "";
     }
