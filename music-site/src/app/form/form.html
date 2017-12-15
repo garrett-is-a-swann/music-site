@@ -12,7 +12,7 @@
              <button *ngSwitchCase="'button'" 
              class='{{config.fields[content].style}} button column' 
              (click)="finish()">{{config.fields[content].text}}</button>
-             <div *ngIf="config.fields[content].error != ''"
+             <div id="{{config.fields[content].id}}_err" *ngIf="config.fields[content].error != ''"
              class="alert alert-danger">
                  {{config.fields[content].error}}
              </div>
