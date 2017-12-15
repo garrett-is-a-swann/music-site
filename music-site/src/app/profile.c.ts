@@ -27,23 +27,26 @@ export class ProfileComponent implements OnInit {
                         document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
                     }
                 }
+                console.log(data_graphs.json)
+                if(data_graphs.json.list.length) {
+                    this.http.get('/api/user/' + data_graphs.json.userid + '/list/' + data_graphs.json.list[0].id).subscribe((data_bands:any) => {
+                        if(data_bands.success) {
+                            for(let entry in data_bands.json.band) {
+                                console.log((data_bands.json.band[entry]).name + ": " + (data_bands.json.band[entry]).name);
+                                document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json.band[entry]).name + "</li>";
+                            }
+                        }
+                        else {
+                            console.log(data_bands.message);
+                        }
+                    });
+                }
             }
             else {
                 console.log(data_graphs.message);
             }
         });
 
-        this.http.get('/api/user/' + data_graphs.json.userid + '/list/' + (data_graphs.json.lists[0]).id).subscribe((data_bands:any) => {
-            if(data_bands.success) {
-                for(let entry in data_bands.json.band) {
-                    console.log((data_bands.json.band[entry]).name + ": " + (data_bands.json.band[entry]).name);
-                    document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json.band[entry]).name + "</li>";
-                }
-            }
-            else {
-                console.log(data_bands.message);
-            }
-        });
 
         //This will be the array of Bands from the default graph
         /*let bands = ["Red Hot Chili Peppers", "Ataxia", "Coheed and Cambria", "Queens of the Stone Age", "Royal Blood"];
@@ -106,9 +109,16 @@ export class ProfileComponent implements OnInit {
         this.http.post('/api/user',
         {
             name:graph_name
+        }).subscribe((data:any) => {
+            if(data.success){
+                document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (<HTMLInputElement>document.getElementById("newGraph")).value + "</a>";
+                (<HTMLInputElement>document.getElementById("newGraph")).value = "";
+            }
+            else {
+                // Display some error from data.message
+            }
         });
+            ;
 
-        document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (<HTMLInputElement>document.getElementById("newGraph")).value + "</a>";
-        (<HTMLInputElement>document.getElementById("newGraph")).value = "";
     }
 }

@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const api = require('./server/routes/api');
 
 const app = express();
+app.enable('trust proxy');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
@@ -24,7 +25,6 @@ app.use('/api', api);
 // Catch all other routes and return index file for now
 app.get('*', (req, res) => {
     if (!req.user) {
-        res.redirect('/login');
     } else {
         next();
     }
@@ -32,7 +32,7 @@ app.get('*', (req, res) => {
 });
 
 // Store port in Express
-const port = process.env.PORT || '80';
+const port = process.env.PORT || '3000';
 app.set('port', port);
 
 // Create HTTP server

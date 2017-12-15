@@ -7,7 +7,7 @@ create table fct_user_login
     ,password_hash varchar(256) NOT NULL
     ,user_id integer NOT NULL
     ,permission smallint NOT NULL
-    ,date_created TIMESTAMP NOT NULL
+    ,date_created TIMESTAMP NOT NULL DEFAULT current_timestamp
     ,PRIMARY KEY(id)
     ,FOREIGN KEY(user_id) REFERENCES dim_user (id)
 );

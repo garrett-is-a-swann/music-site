@@ -159,18 +159,33 @@ router.route('/register')
                     else {
                         pool.query('INSERT INTO dim_user (email, date_created)'
                                 +' VALUES ($1, current_timestamp) RETURNING id', [req.body.email]).then(resp => {
-                            pool.query('INSERT INTO fct_user_login (username, password_hash, password_salt, user_id, permission, date_created)'
-                                    +' VALUES ($1, $2, $3, $4, $5, current_timestamp) RETURNING *', [req.body.username, hashed[0].toString('hex'), hashed[1].toString('hex'), resp.rows[0].id, 10 ]).then(resp => {
-                                req.session.user = req.body;
-                                req.session.user.user_id = resp.rows[0].id
-                                req.session.user.permission = resp.rows[0].permission
-                                delete req.session.user.password_hash;
-                                delete req.session.user.password_salt;
-                                console.log(req.session.user, ' has logged in');
-                                res.status(201).send({success: true, message: 'User created'})
-                            }).catch(e => {
-                                console.log(e);
-                            });
+                        pool.query('INSERT INTO fct_user_login (username, password_hash, password_salt, user_id, permission, date_created)'
+                                +' VALUES ($1, $2, $3, $4, $5, current_timestamp) RETURNING *'
+                                  ,[req.body.username, hashed[0].toString('hex')
+                                    , hashed[1].toString('hex')
+                                    , resp.rows[0].id, 10 ]).then(
+                                  (resp) => {
+                            req.session.user = req.body;
+                            req.session.user.user_id = resp.rows[0].id
+                            req.session.user.permission = resp.rows[0].permission
+                            delete req.session.user.password_hash;
+                            delete req.session.user.password_salt;
+                            console.log(req.session.user, ' has logged in');
+                            res.status(201).send({success: true, message: 'User created'})
+                            pool.query("INSERT INTO user_list (userid, name) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING *"
+                              ,[req.session.user.user_id, 'Default'], 
+                              (e, resp) => {
+                                if(e) {
+                                    console.log(e.stack);
+                                }
+                                else {
+                                    // Create default list for the user.
+                                }
+                                req.session.user.list = 'Default'
+                            })
+                        }).catch(e => {
+                            console.log(e);
+                        });
                         }).catch(e => {
                             console.log(e);
                         });
@@ -215,8 +230,18 @@ router.route('/bands')
     })
     .get((req, res, next) => {
         if (req.session && req.session.user) {
-            pool.query("SELECT b.name ,string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid right join fct_user_band bu on b.id = bu.bandid WHERE bu.userid = $1 GROUP BY b.name", [req.session.user.user_id], (e, resp) => {
+            pool.query(
+                "SELECT b.name ,string_agg(g.name, '|') as genres "
+                +"FROM dim_genre g "
+                +"join fct_band_genre bg on g.id = bg.genreid "
+                +"join dim_band b on b.id = bg.bandid right "
+                +"join list_entry l on b.id = l.bandid "
+                +"join user_list u on u.name = l.listname "
+                +"WHERE u.userid = $1 AND listname = $2 "
+                +"GROUP BY b.name"
+              ,[req.session.user.user_id, req.session.user.list], (e, resp) => {
                 if(e) {
+                    res.json({success: false, message: 'Something went wrong'});
                     console.log(e.stack);
                 }
                 else {
@@ -235,36 +260,145 @@ router.route('/bands')
                 console.log(resp.rows);
                 if(resp.rows.length) {
                     console.log(req.session.user)
-                    pool.query("SELECT b.name, string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid WHERE b.name = $1 GROUP BY b.name",
-                            [req.body.name], (_e, _resp) => {
-                                if(_e) {
-                                    console.log(_e.stack);
-                                    res.json({success: false, message: 'Something went wrong'});
-                                }
-                                else {
-                                    console.log(_resp.rows[0])
-                                    res.json({success: true, message: 'Added Link', json: _resp.rows[0]});
-                                }
-                            })
+                        pool.query("SELECT b.name, string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid WHERE b.name = $1 GROUP BY b.name",
+                                [req.body.name], (_e, _resp) => {
+                                    if(_e) {
+                                        console.log(_e.stack);
+                                        res.json({success: false, message: 'Something went wrong'});
+                                    }
+                                    else {
+                                        console.log(_resp.rows[0])
+                                            res.json({success: true, message: 'Added Link', json: _resp.rows[0]});
+                                    }
+                                })
                     if(req.session.user) {
-                        pool.query('INSERT into fct_user_band(userid, bandid, date_added) VALUES($1, $2, current_timestamp) ON CONFLICT DO NOTHING RETURNING *', [req.session.user.user_id, resp.rows[0].id],
-                            (_e, _resp) => {
-                                if(_e) {
-                                    console.log(_e.stack);
-                                    res.json({success: false, message: 'Something went wrong'});
-                                }
-                            })
-                        }
+                        pool.query('INSERT into fct_user_band(userid, bandid, date_added) VALUES($1, $2, current_timestamp) ON CONFLICT DO NOTHING RETURNING *'
+                            ,[req.session.user.user_id, resp.rows[0].id],
+                            (_e, _resp) => 
+                        {
+                            if(_e) {
+                                console.log(_e.stack);
+                                res.json({success: false, message: 'Something went wrong'});
+                            }
+                        })
                     }
                 }
-            })
+                else {
+                    console.log('Band not found. This is where we should log IP, bname, and User if available');
+                    var ip = req.headers['x-forwarded-for'];
+                    console.log(ip)
+                }
+            }
         })
+    })
     .put((req, res, next) => {
         next(new Error('Not implemented'));
     })
     .delete((req, res, next) => {
         next(new Error('Not implemented'));
     });
+
+
+router.route('/user')
+    .all((req, res, next) => {
+        next();
+    })
+    .get((req, res, next) => {
+        if (req.session && req.session.user) {
+            pool.query(
+                    "SELECT id, name "
+                    +"FROM(SELECT "
+                    +"ROW_NUMBER() OVER(PARTITION BY userid ORDER BY date_created) as id, * "
+                    +"FROM user_list WHERE userid = $1) as f",
+              [req.session.user.user_id],
+              (e, resp) => {
+                if(e) {
+                    console.log(e.stack);
+                    res.json({success: false, message: 'Something went wrong'});
+                }
+                else {
+                    console.log(resp.rows)
+                    res.json({
+                        success: true
+                        ,message: 'All links'
+                        ,json:{
+                            userid: req.session.user.user_id
+                            ,list: resp.rows}});
+                }
+            })
+        } else {
+            res.json({success: false, message: 'No logged in user.'});
+        }
+    })
+    .post((req, res, next) => {
+        if (req.session && req.session.user) {
+            pool.query("INSERT INTO user_list (userid, name) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING *"
+              ,[req.session.user.user_id, req.body.name]
+              ,(e, resp) => {
+                if(e) {
+                    console.log(e.stack);
+                    res.json({success: false, message: 'List name is already in use.'});
+                }
+                else {
+                    req.session.user.list = req.body.name;
+                    res.json({success: true, message: 'All links', json: resp.rows});
+                }
+            })
+        }
+    })
+    .put((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+    .delete((req, res, next) => {
+        next(new Error('Not implemented'));
+    });
+
+router.param(['id', 'page'], function (req, res, next, value) {
+    console.log('CALLED ONLY ONCE with', value);
+    next();
+});
+
+router.route('/user/:id/list/:page')
+    .all((req, res, next) => {
+        next();
+    })
+    .get((req, res, next) => {
+        console.log(req.params.id, req.params.page)
+        pool.query(
+            "SELECT b.name "
+            +"FROM list_entry l "
+                +"join dim_band b on b.id = l.bandid "
+                +"join ("
+                    +"SELECT name "
+                        +",ROW_NUMBER() OVER(PARTITION BY u.userid ORDER BY u.date_created) as rowid "
+                    +"FROM "
+                        +"user_list u "
+                    +"WHERE "
+                        +"userid = $1 "
+                    +") as u on u.name = l.listname "
+            +"WHERE u.rowid = $2 "
+          ,[req.params.id, req.params.page]
+          ,(e, resp) => {
+            if(e) {
+                console.log(e.stack);
+            }
+            else {
+                res.json({success: true, message: 'Here are your bands bro', json: resp.rows});
+            }
+        })
+    })
+    .post((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+    .put((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+    .delete((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+
+
+
 
 
 /*
@@ -312,3 +446,39 @@ router.route('/login').all((req,res,next)=> {
 
 
 module.exports = router;
+
+
+
+
+/* REFERENCE
+
+router.route('/xxxx')
+    .all((req, res, next) => {
+        next();
+    })
+    .get((req, res, next) => {
+        if (req.session && req.session.user) {
+            pool.query("SELECT * FROM table where id=$1"
+              ,[req.session.user.user_id], 
+              (e, resp) => {
+                if(e) {
+                    console.log(e.stack);
+                }
+                else {
+                    res.json({success: true, message: 'All links', json: resp.rows});
+                }
+            })
+        }
+    })
+    .post((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+    .put((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+    .delete((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+ 
+
+*/
