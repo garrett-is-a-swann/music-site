@@ -26,6 +26,7 @@ export class FormComponent implements OnInit {
     finish() {
         var errors=false;
 
+        console.log(this.config);
         var pass_error = document.getElementById("password_err");
         var conf_pass_error = document.getElementById("confirm_password_err");
         var username_error = document.getElementById("username_err");
@@ -90,6 +91,11 @@ export class FormComponent implements OnInit {
 
                 this.config.fields.password.error= !data.success?data.errors.password:'';
                 console.log(this.config.fields.username.error, this.config.fields.email.error, this.config.fields.password.error)
+
+                if(this.config.fields.username.error == '' && this.config.fields.email.error == '' && this.config.fields.password.error == '') {
+                    document.getElementById("reg_success").hidden = false;
+                    
+                }
 
             }); // Sends POST
         }

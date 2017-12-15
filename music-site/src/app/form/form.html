@@ -16,6 +16,13 @@
              class="alert alert-danger">
                  {{config.fields[content].error}}
              </div>
+             
         </div>
     </div>
+
+    
 </form>
+
+<div id="reg_success" class="alert alert-primary" *ngIf="config.fields['username'].value != ''" hidden="true;">
+    User created!
+</div>
