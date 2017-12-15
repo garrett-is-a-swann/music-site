@@ -12,20 +12,26 @@ export class ProfileComponent implements OnInit {
 
     //On intialization, we will display already saved graph-lists and band names
     //of default graph-list.
+    userid;
+    graphs_arr: [{id, name}];
+
     ngOnInit(): void {
         //We will use array of user graphs here.
         var data_graphs;
 
         this.http.get('/api/user').subscribe((data_graphs:any) => {
             if(data_graphs.success) {
+                this.userid = data_graphs.json.userid;
                 for(let entry in data_graphs.json.list) {
                     console.log((data_graphs.json.list[entry]).id + ": " + (data_graphs.json.list[entry]).name);
-                    if((data_graphs.json.list[entry]).id == "0") {
+
+                    this.graphs_arr.push(data_graphs.json.list[entry].id, data_graphs.json.list[entry].name)
+                    /*if((data_graphs.json.list[entry]).id == "0") {
                         document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action active pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
                     }
                     else {
                         document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
-                    }
+                    }*/
                 }
             }
             else {
@@ -111,4 +117,32 @@ export class ProfileComponent implements OnInit {
         document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (<HTMLInputElement>document.getElementById("newGraph")).value + "</a>";
         (<HTMLInputElement>document.getElementById("newGraph")).value = "";
     }
+
+    showGraphContents(graph_name) {
+
+        document.getElementById("list_bands").innerHTML = ""; 
+        console.log(graph_name);
+
+        var id_number;
+
+        for(var i in this.graphs_arr) {
+            if(this.graphs_arr[i].name == graph_name) {
+                id_number = this.graphs_arr[i].id;
+            }
+        }
+
+        this.http.get('/api/user/' + this.userid + '/list/' + id_number).subscribe((data_bands:any) => {
+            if(data_bands.success) {
+                for(let entry in data_bands.json.band) {
+                    console.log((data_bands.json.band[entry]).name + ": " + (data_bands.json.band[entry]).name);
+                    document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json.band[entry]).name + "</li>";
+                }
+            }
+            else {
+                console.log(data_bands.message);
+            }
+        });
+
+    }
+
 }
