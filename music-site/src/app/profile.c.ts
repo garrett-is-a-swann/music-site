@@ -14,6 +14,7 @@ export class ProfileComponent implements OnInit {
     //of default graph-list.
     userid;
     graphs_arr = [];
+    username;
 
     ngOnInit(): void {
         //We will use array of user graphs here.
@@ -26,12 +27,6 @@ export class ProfileComponent implements OnInit {
                     console.log((data_graphs.json.list[entry]).id + ": " + (data_graphs.json.list[entry]).name);
 
                     this.graphs_arr.push({id: data_graphs.json.list[entry].id, name: data_graphs.json.list[entry].name})
-                    /*if((data_graphs.json.list[entry]).id == "0") {
-                        document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action active pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
-                    }
-                    else {
-                        document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
-                    }*/
                 }
                 console.log(data_graphs.json)
                 if(data_graphs.json.list.length) {
@@ -53,20 +48,12 @@ export class ProfileComponent implements OnInit {
             }
         });
 
-
-        //This will be the array of Bands from the default graph
-        /*let bands = ["Red Hot Chili Peppers", "Ataxia", "Coheed and Cambria", "Queens of the Stone Age", "Royal Blood"];
-        for(let i in bands) {
-            document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + bands[i] + "</li>"; 
-        }*/
-
+        this.http.get('/api/user/' + this.userid).subscribe((name_data:any) => {
+            if(data_graphs.success) {
+                this.username = name_data.json.name;
+            }
+        });
     }
- 
-    profile_name = 'My Profile'
-    
-    username = 'usernameTMP';
-    password = 'passTMP';
-    email_addr = 'emailTMP';
 
     //Error flags
     usernameError = '';
@@ -74,12 +61,6 @@ export class ProfileComponent implements OnInit {
     passwordError = '';
 
     errors: string[]=[];
-    
-
-    /*for(var name of this.graphs) {
-        console.log(name);
-       // 
-    } */ 
 
     myFunction() {
         var x = document.getElementById("ChangeUser");
