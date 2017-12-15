@@ -64,14 +64,12 @@ export class IndexView implements OnInit, AfterViewInit{
     };
 
     myFunction() {
-        console.log(this.addedBands)
         this.bandError = '';
         this.http.post('/api/bands',
             // Build POST to send
             {
                 name:this.userInput
             }).subscribe((data:any) => {
-                console.log(data)
                 if(data.success) {
                     this.graphPush(data.json.name, data.json.genres);
                 }

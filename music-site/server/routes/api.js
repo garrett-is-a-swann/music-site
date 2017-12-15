@@ -93,6 +93,7 @@ router.route('/authenticate')
                     }
                     else {
                         req.session.user = resp.rows[0];
+                        req.session.user.list = 'Default'
                         console.log(req.session.user)
                         delete req.session.user.password_hash;
                         delete req.session.user.password_salt;
@@ -230,6 +231,7 @@ router.route('/bands')
     })
     .get((req, res, next) => {
         if (req.session && req.session.user) {
+            console.log(req.session.user.list)
             pool.query(
                 "SELECT b.name ,string_agg(g.name, '|') as genres "
                 +"FROM dim_genre g "
@@ -237,7 +239,7 @@ router.route('/bands')
                 +"join dim_band b on b.id = bg.bandid right "
                 +"join list_entry l on b.id = l.bandid "
                 +"join user_list u on u.name = l.listname "
-                +"WHERE u.userid = $1 AND listname = $2 "
+                +"WHERE u.userid = $1 AND u.name = $2 "
                 +"GROUP BY b.name"
               ,[req.session.user.user_id, req.session.user.list], (e, resp) => {
                 if(e) {
@@ -261,19 +263,20 @@ router.route('/bands')
                 if(resp.rows.length) {
                     console.log(req.session.user)
                         pool.query("SELECT b.name, string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid WHERE b.name = $1 GROUP BY b.name",
-                                [req.body.name], (_e, _resp) => {
-                                    if(_e) {
-                                        console.log(_e.stack);
-                                        res.json({success: false, message: 'Something went wrong'});
-                                    }
-                                    else {
-                                        console.log(_resp.rows[0])
-                                            res.json({success: true, message: 'Added Link', json: _resp.rows[0]});
-                                    }
-                                })
+                          [req.body.name], (_e, _resp) => {
+                            if(_e) {
+                                console.log(_e.stack);
+                                res.json({success: false, message: 'Something went wrong'});
+                                return
+                            }
+                            else {
+                                console.log(_resp.rows[0])
+                                res.json({success: true, message: 'Added Link', json: _resp.rows[0]});
+                            }
+                        })
                     if(req.session.user) {
-                        pool.query('INSERT into fct_user_band(userid, bandid, date_added) VALUES($1, $2, current_timestamp) ON CONFLICT DO NOTHING RETURNING *'
-                            ,[req.session.user.user_id, resp.rows[0].id],
+                        pool.query('INSERT into list_entry(userid, listname, bandid) VALUES($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *'
+                            ,[req.session.user.user_id, req.session.user.list, resp.rows[0].id],
                             (_e, _resp) => 
                         {
                             if(_e) {
@@ -298,6 +301,45 @@ router.route('/bands')
         next(new Error('Not implemented'));
     });
 
+router.param('id', function (req, res, next, value) {
+    console.log('CALLED ONLY ONCE with', value);
+    next();
+});
+
+router.route('/user/:id')
+    .all((req, res, next) => {
+        next();
+    })
+    .get((req, res, next) => {
+        pool.query("SELECT username from dim_user WHERE id = $1", 
+          [req.params.id], (e, resp) => {
+            if(e) {
+                res.json({success: false, message: 'Something went wrong'})
+            }
+            else if(resp.rows.length == 0){
+                res.json({success: false, message: 'User does not exist'})
+            }
+            else {
+                console.log(resp.rows)
+                res.json({
+                    success: true
+                    ,message: 'Username of id<' + req.params.id + '>'
+                    ,json:{
+                        username: _resp.rows[0]
+                    }
+                })
+            }
+        })
+    })
+    .post((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+    .put((req, res, next) => {
+        next(new Error('Not implemented'));
+    })
+    .delete((req, res, next) => {
+        next(new Error('Not implemented'));
+    });
 
 router.route('/user')
     .all((req, res, next) => {
@@ -332,6 +374,7 @@ router.route('/user')
     })
     .post((req, res, next) => {
         if (req.session && req.session.user) {
+            console.log(req.body)
             pool.query("INSERT INTO user_list (userid, name) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING *"
               ,[req.session.user.user_id, req.body.name]
               ,(e, resp) => {
@@ -383,6 +426,7 @@ router.route('/user/:id/list/:page')
                 console.log(e.stack);
             }
             else {
+                console.log(resp.rows)
                 res.json({success: true, message: 'Here are your bands bro', json: resp.rows});
             }
         })

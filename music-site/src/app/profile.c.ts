@@ -13,7 +13,7 @@ export class ProfileComponent implements OnInit {
     //On intialization, we will display already saved graph-lists and band names
     //of default graph-list.
     userid;
-    graphs_arr: [{id, name}];
+    graphs_arr = [];
 
     ngOnInit(): void {
         //We will use array of user graphs here.
@@ -25,7 +25,7 @@ export class ProfileComponent implements OnInit {
                 for(let entry in data_graphs.json.list) {
                     console.log((data_graphs.json.list[entry]).id + ": " + (data_graphs.json.list[entry]).name);
 
-                    this.graphs_arr.push(data_graphs.json.list[entry].id, data_graphs.json.list[entry].name)
+                    this.graphs_arr.push({id: data_graphs.json.list[entry].id, name: data_graphs.json.list[entry].name})
                     /*if((data_graphs.json.list[entry]).id == "0") {
                         document.getElementById("graphlist").innerHTML += "<a class=\"list-group-item list-group-item-action active pt-1\" style=\"height:35px;\" data-toggle=\"list\" href=\"\">" + (data_graphs.json.list[entry]).name + "</a>";
                     }
@@ -130,22 +130,15 @@ export class ProfileComponent implements OnInit {
 
     showGraphContents(graph_name) {
 
-        document.getElementById("list_bands").innerHTML = ""; 
         console.log(graph_name);
 
-        var id_number;
-
-        for(var i in this.graphs_arr) {
-            if(this.graphs_arr[i].name == graph_name) {
-                id_number = this.graphs_arr[i].id;
-            }
-        }
-
-        this.http.get('/api/user/' + this.userid + '/list/' + id_number).subscribe((data_bands:any) => {
+        this.http.get('/api/user/' + this.userid + '/list/' + graph_name.id).subscribe((data_bands:any) => {
+            console.log(data_bands)
+            document.getElementById("list_bands").innerHTML = "";
             if(data_bands.success) {
-                for(let entry in data_bands.json.band) {
-                    console.log((data_bands.json.band[entry]).name + ": " + (data_bands.json.band[entry]).name);
-                    document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json.band[entry]).name + "</li>";
+                for(let entry in data_bands.json) {
+                    console.log((data_bands.json[entry]).name + ": " + (data_bands.json[entry]).name);
+                    document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json[entry]).name + "</li>";
                 }
             }
             else {

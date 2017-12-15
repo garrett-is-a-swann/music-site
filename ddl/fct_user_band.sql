@@ -1,5 +1,5 @@
 drop table if exists fct_user_band;
-
+/*
 create table fct_user_band
 (
     userid INT NOT NULL
@@ -10,7 +10,7 @@ create table fct_user_band
     ,FOREIGN KEY (bandid) REFERENCES dim_band (id)
 )
 ;
-
+*/
 
 
 drop table if exists user_list;
@@ -29,21 +29,24 @@ create table user_list
 drop table if exists list_entry;
 create table list_entry
 (
-    listname varchar(64) NOT NULL
+    userid INT NOT NULL
+    ,listname varchar(80) NOT NULL
     ,bandid int NOT NULL
-    ,count int NOT NULL CHECK (count > 0)
 
     ,FOREIGN KEY (bandid) REFERENCES dim_band (id)
 )
 ;
+
+
+/*
 SELECT *
 FROM (
     SELECT 
         ROW_NUMBER() OVER(PARTITION BY u.userid ORDER BY u.date_created) as rowid
         ,u.*
-        ,v.*
     FROM user_list u
     ) as f 
+    */
 
 
 
