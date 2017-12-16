@@ -311,24 +311,33 @@ router.route('/user/:id')
         next();
     })
     .get((req, res, next) => {
-        pool.query("SELECT username from dim_user WHERE id = $1", 
+        pool.query("SELECT username "
+                +"from fct_user_login "
+                +"WHERE id = $1", 
           [req.params.id], (e, resp) => {
-            if(e) {
-                res.json({success: false, message: 'Something went wrong'})
-            }
-            else if(resp.rows.length == 0){
-                res.json({success: false, message: 'User does not exist'})
-            }
-            else {
-                console.log(resp.rows)
-                res.json({
-                    success: true
-                    ,message: 'Username of id<' + req.params.id + '>'
-                    ,json:{
-                        username: _resp.rows[0]
-                    }
-                })
-            }
+            pool.query(
+                    "SELECT id, name "
+                    +"FROM(SELECT "
+                    +"ROW_NUMBER() OVER(PARTITION BY userid ORDER BY date_created) as id, * "
+                    +"FROM user_list WHERE userid = $1) as f"
+              ,[req.params.id],
+              (_e, _resp) => {
+                if(e || _e) {
+                    console.log(e.stack);
+                    console.log(_e.stack);
+                    res.json({success: false, message: 'Something went wrong'});
+                }
+                else {
+                    console.log(resp.rows)
+                    res.json({
+                        success: true
+                        ,message: 'Details of id<' + req.params.id + '>'
+                        ,json:{
+                            userid: req.params.id
+                            ,username: resp.rows[0].username
+                            ,list: _resp.rows}});
+                }
+            })
         })
     })
     .post((req, res, next) => {
@@ -346,13 +355,14 @@ router.route('/user')
         next();
     })
     .get((req, res, next) => {
+        console.log('11111')
         if (req.session && req.session.user) {
+            console.log('id is', req.session.user.user_id)
             pool.query(
-                    "SELECT id, name "
-                    +"FROM(SELECT "
-                    +"ROW_NUMBER() OVER(PARTITION BY userid ORDER BY date_created) as id, * "
-                    +"FROM user_list WHERE userid = $1) as f",
-              [req.session.user.user_id],
+                    "SELECT id, username "
+                    +"FROM fct_user_login "
+                    +"WHERE id = $1 "
+              ,[req.session.user.user_id],
               (e, resp) => {
                 if(e) {
                     console.log(e.stack);
@@ -365,7 +375,7 @@ router.route('/user')
                         ,message: 'All links'
                         ,json:{
                             userid: req.session.user.user_id
-                            ,list: resp.rows}});
+                            ,username: resp.rows[0].username}});
                 }
             })
         } else {

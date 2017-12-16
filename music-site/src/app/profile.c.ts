@@ -12,7 +12,7 @@ export class ProfileComponent implements OnInit {
 
     //On intialization, we will display already saved graph-lists and band names
     //of default graph-list.
-    userid;
+    userid:number;
     graphs_arr = [];
     username;
 
@@ -20,39 +20,41 @@ export class ProfileComponent implements OnInit {
         //We will use array of user graphs here.
         var data_graphs;
 
-        this.http.get('/api/user').subscribe((data_graphs:any) => {
-            if(data_graphs.success) {
-                this.userid = data_graphs.json.userid;
-                for(let entry in data_graphs.json.list) {
-                    console.log((data_graphs.json.list[entry]).id + ": " + (data_graphs.json.list[entry]).name);
+        this.http.get('/api/user').subscribe((user:any) => {
+            console.log(user)
+            if(user.success) {
+                this.userid = user.json.userid;
+                this.http.get('/api/user/'+this.userid).subscribe((data_graphs:any) => {
+                    console.log(data_graphs)
+                    if(data_graphs.success) {
+                        this.username = data_graphs.json.username;
+                        for(let entry in data_graphs.json.list) {
+                            console.log((data_graphs.json.list[entry]).id + ": " + (data_graphs.json.list[entry]).name);
 
-                    this.graphs_arr.push({id: data_graphs.json.list[entry].id, name: data_graphs.json.list[entry].name})
-                }
-                console.log(data_graphs.json)
-                if(data_graphs.json.list.length) {
-                    this.http.get('/api/user/' + data_graphs.json.userid + '/list/' + data_graphs.json.list[0].id).subscribe((data_bands:any) => {
-                        if(data_bands.success) {
-                            for(let entry in data_bands.json.band) {
-                                console.log((data_bands.json.band[entry]).name + ": " + (data_bands.json.band[entry]).name);
-                                document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json.band[entry]).name + "</li>";
-                            }
+                            this.graphs_arr.push({id: data_graphs.json.list[entry].id, name: data_graphs.json.list[entry].name})
                         }
-                        else {
-                            console.log(data_bands.message);
+                        console.log(data_graphs.json)
+                        if(data_graphs.json.list.length) {
+                            this.http.get('/api/user/' + data_graphs.json.userid + '/list/' + data_graphs.json.list[0].id).subscribe((data_bands:any) => {
+                                if(data_bands.success) {
+                                    for(let entry in data_bands.json.band) {
+                                        console.log((data_bands.json.band[entry]).name + ": " + (data_bands.json.band[entry]).name);
+                                        document.getElementById("list_bands").innerHTML += "<li class=\"list-group-item list-group-item-into list-group-item-action pt-1\" style=\"height:35px;\">" + (data_bands.json.band[entry]).name + "</li>";
+                                    }
+                                }
+                                else {
+                                    console.log(data_bands.message);
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                })
             }
             else {
                 console.log(data_graphs.message);
             }
         });
 
-        this.http.get('/api/user/' + this.userid).subscribe((name_data:any) => {
-            if(data_graphs.success) {
-                this.username = name_data.json.name;
-            }
-        });
     }
 
     //Error flags
