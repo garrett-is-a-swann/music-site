@@ -11,3 +11,4 @@ create table fct_user_login
     ,PRIMARY KEY(id)
     ,FOREIGN KEY(user_id) REFERENCES dim_user (id)
 );
+

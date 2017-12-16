@@ -93,7 +93,7 @@ router.route('/authenticate')
                     }
                     else {
                         req.session.user = resp.rows[0];
-                        req.session.user.list = 'Default'
+                        req.session.user.selected_list = 1
                         console.log(req.session.user)
                         delete req.session.user.password_hash;
                         delete req.session.user.password_salt;
@@ -175,14 +175,14 @@ router.route('/register')
                             res.status(201).send({success: true, message: 'User created'})
                             pool.query("INSERT INTO user_list (userid, name) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING *"
                               ,[req.session.user.user_id, 'Default'], 
-                              (e, resp) => {
-                                if(e) {
-                                    console.log(e.stack);
+                              (_e, _resp) => {
+                                if(_e) {
+                                    console.log(_e.stack);
                                 }
                                 else {
                                     // Create default list for the user.
                                 }
-                                req.session.user.list = 'Default'
+                                req.session.user.selected_list = 1
                             })
                         }).catch(e => {
                             console.log(e);
@@ -231,7 +231,7 @@ router.route('/bands')
     })
     .get((req, res, next) => {
         if (req.session && req.session.user) {
-            console.log(req.session.user.list)
+            console.log("THIS SHOULD BE GOSU",req.session.user.list)
             pool.query(
                 "SELECT b.name ,string_agg(g.name, '|') as genres "
                 +"FROM dim_genre g "
@@ -241,7 +241,8 @@ router.route('/bands')
                 +"join user_list u on u.name = l.listname "
                 +"WHERE u.userid = $1 AND u.name = $2 "
                 +"GROUP BY b.name"
-              ,[req.session.user.user_id, req.session.user.list], (e, resp) => {
+              ,[req.session.user.user_id, req.session.user.list[req.session.user.select_list-1].name], (e, resp) => {
+                  console.log(req.session.user.list[req.session.user.select_list-1].name)
                 if(e) {
                     res.json({success: false, message: 'Something went wrong'});
                     console.log(e.stack);
@@ -275,8 +276,9 @@ router.route('/bands')
                             }
                         })
                     if(req.session.user) {
+                        console.log(req.session.user.list)
                         pool.query('INSERT into list_entry(userid, listname, bandid) VALUES($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *'
-                            ,[req.session.user.user_id, req.session.user.list, resp.rows[0].id],
+                            ,[req.session.user.user_id, req.session.user.list[req.session.user.select_list-1].name, resp.rows[0].id],
                             (_e, _resp) => 
                         {
                             if(_e) {
@@ -302,7 +304,6 @@ router.route('/bands')
     });
 
 router.param('id', function (req, res, next, value) {
-    console.log('CALLED ONLY ONCE with', value);
     next();
 });
 
@@ -328,7 +329,8 @@ router.route('/user/:id')
                     res.json({success: false, message: 'Something went wrong'});
                 }
                 else {
-                    console.log(resp.rows)
+                    console.log(_resp.rows)
+                    req.session.user.list = _resp.rows;
                     res.json({
                         success: true
                         ,message: 'Details of id<' + req.params.id + '>'
@@ -355,7 +357,6 @@ router.route('/user')
         next();
     })
     .get((req, res, next) => {
-        console.log('11111')
         if (req.session && req.session.user) {
             console.log('id is', req.session.user.user_id)
             pool.query(
@@ -393,7 +394,6 @@ router.route('/user')
                     res.json({success: false, message: 'List name is already in use.'});
                 }
                 else {
-                    req.session.user.list = req.body.name;
                     res.json({success: true, message: 'All links', json: resp.rows});
                 }
             })
@@ -407,7 +407,6 @@ router.route('/user')
     });
 
 router.param(['id', 'page'], function (req, res, next, value) {
-    console.log('CALLED ONLY ONCE with', value);
     next();
 });
 
@@ -417,19 +416,20 @@ router.route('/user/:id/list/:page')
     })
     .get((req, res, next) => {
         console.log(req.params.id, req.params.page)
+        req.session.user.select_list = req.params.page
         pool.query(
             "SELECT b.name "
             +"FROM list_entry l "
                 +"join dim_band b on b.id = l.bandid "
                 +"join ("
-                    +"SELECT name "
+                    +"SELECT name, userid"
                         +",ROW_NUMBER() OVER(PARTITION BY u.userid ORDER BY u.date_created) as rowid "
                     +"FROM "
                         +"user_list u "
                     +"WHERE "
                         +"userid = $1 "
                     +") as u on u.name = l.listname "
-            +"WHERE u.rowid = $2 "
+            +"WHERE u.rowid = $2 AND l.userid = $1"
           ,[req.params.id, req.params.page]
           ,(e, resp) => {
             if(e) {
