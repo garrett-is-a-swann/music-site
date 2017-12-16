@@ -12,10 +12,17 @@
              <button *ngSwitchCase="'button'" 
              class='{{config.fields[content].style}} button column' 
              (click)="finish()">{{config.fields[content].text}}</button>
-             <div *ngIf="config.fields[content].error != ''"
+             <div id="{{config.fields[content].id}}_err" *ngIf="config.fields[content].error != ''"
              class="alert alert-danger">
                  {{config.fields[content].error}}
              </div>
+             
         </div>
     </div>
+
+    
 </form>
+
+<div id="reg_success" class="alert alert-primary" *ngIf="config.fields['username'].value != ''" hidden="true;">
+    User created!
+</div>

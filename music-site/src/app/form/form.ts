@@ -26,6 +26,19 @@ export class FormComponent implements OnInit {
     finish() {
         var errors=false;
 
+        console.log(this.config);
+        var pass_error = document.getElementById("password_err");
+        var conf_pass_error = document.getElementById("confirm_password_err");
+        var username_error = document.getElementById("username_err");
+        var email_error = document.getElementById("email_err");
+
+        if(pass_error != null) {
+            pass_error.style.display = "none";
+            conf_pass_error.style.display = "none";
+            username_error.style.display = "none";
+            email_error.style.display = "none";
+        }
+
         // Note to h@xx0rz: I'm only going to do password comparison checks on the client side.
         //      If you decide to mess with the validation, I won't even bat an eye but have fun
         //      logging into my site.
@@ -33,13 +46,14 @@ export class FormComponent implements OnInit {
             if(validate == 'equal') {
                 for(var i=0; i<this.config.validation.equal.length; i++) {
                     var comparator=this.config.validation.equal[i][0];
-
                     for(var j=1; j<this.config.validation.equal[i].length; j++) {
                         if(this.config.fields[comparator].value != this.config.fields[this.config.validation.equal[i][j]].value) {
                             for(var k=0; k<this.config.validation.equal[i].length; k++) {
                                 this.config.fields[this.config.validation.equal[i][k]].error = "These don't match!";
                             }
                             errors=true;
+                            pass_error.style.display = "block";
+                            conf_pass_error.style.display = "block";
                             break;
                         }
                     }
@@ -62,10 +76,26 @@ export class FormComponent implements OnInit {
                 console.log(errors)
                 console.log(data)
                 console.log(data['username'])
+
                 this.config.fields.username.error = !data.success?data.errors.username:'';
+                if(this.config.fields.username.error != '') {
+                    this.config.fields["username"].error = "Username is already in use.";
+                    username_error.style.display = "block";
+                }
+
                 this.config.fields.email.error = !data.success?data.errors.email:'';
+                if(this.config.fields.email.error != '') {
+                    this.config.fields["email"].error = "Email has been taken.";
+                    email_error.style.display = "block";
+                }
+
                 this.config.fields.password.error= !data.success?data.errors.password:'';
                 console.log(this.config.fields.username.error, this.config.fields.email.error, this.config.fields.password.error)
+
+                if(this.config.fields.username.error == '' && this.config.fields.email.error == '' && this.config.fields.password.error == '') {
+                    document.getElementById("reg_success").hidden = false;
+                    
+                }
 
             }); // Sends POST
         }
