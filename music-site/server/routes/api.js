@@ -230,7 +230,7 @@ router.route('/bands')
         next();
     })
     .get((req, res, next) => {
-        if (req.session && req.session.user) {
+        if (req.session && req.session.user && req.session.user.list && req.session.user.select_list) {
             console.log("THIS SHOULD BE GOSU",req.session.user.list)
             pool.query(
                 "SELECT b.name ,string_agg(g.name, '|') as genres "
