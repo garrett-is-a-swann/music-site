@@ -23,7 +23,9 @@ export class IndexView implements OnInit, AfterViewInit{
 
 
     userInput = '';
+    playlistInput = '';
     addedBands = [];
+    addedPlaylists = [];
     bandError = '';
 
     cy = undefined;
@@ -83,6 +85,11 @@ export class IndexView implements OnInit, AfterViewInit{
     reSize() {
         this.cy.resize();
         this.cy.fit();
+    }
+
+    addPlaylist() {
+        this.addedPlaylists.push(this.playlistInput);
+        console.log(this.addedPlaylists);
     }
 
     graphPush(band_name:string, genre_psv:string): void {

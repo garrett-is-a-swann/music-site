@@ -14,13 +14,24 @@
                 <div class="col col-auto px-0 mx-0">
                         <button style="outline:0; height:30px;" (click)="myFunction()">Add</button>
                 </div>
-                <div class="col px-0 mx-0">
+                <div class="col col-sm-auto pr-0 pr-md-4 pl-0">
                     <input id="typingBox" #typingBox [(ngModel)]="userInput" placeholder="Band Name" list="suggestions">
                     <datalist id="suggestions" >
                     <option *ngFor="let band of addedBands" value="{{band}}"> </option>
                     </datalist>
                 </div>
-                <div class="col col-auto align-self-end mx-0 px-0">
+                
+                <div class="col col-auto ml-sm-4 pl-0 pl-sm-3 mr-auto pr-auto">
+                    <div class="row">
+                        <div class="col mx-0 pr-0">
+                            <button style="outline:0; height:30px;" (click)="addPlaylist()">Link</button>
+                        </div>
+                        <div class="col mx-0 pl-0">
+                            <input id="playlistBox" #playlistBox [(ngModel)]="playlistInput" placeholder="Spotify URL">
+                        </div>
+                    </div>
+                </div>
+                <div class="align-self-end">
                     <button type="button" style="height:30px;" class="btn btn-danger btn-sm" (click)="reSize()">Resize</button>
                 </div>
             </div>
