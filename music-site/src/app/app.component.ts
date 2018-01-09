@@ -38,4 +38,14 @@ export class AppComponent implements OnInit {
             .subscribe(); // Sends POST
         }
     }
+
+    activateNavItem(elementID) {
+        var ul = document.getElementsByTagName("li");
+        for(var i=0; i<ul.length; i++) {
+            ul[i].classList.remove('active');
+        }
+        document.getElementById(elementID).classList.add('active');
+
+    }
+
 }
