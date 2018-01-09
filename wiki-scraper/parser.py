@@ -64,12 +64,15 @@ def main():
             pair={}
             try_href = False
             if each.th and each.th.text != '':
-                print(each.th.text)
+                print('TH', each.th.text)
                 cur_th = each.th.text
                 bandR[cur_th]=[]
                 #if each.td:
                     #print("tasda",each.td.text)
                     #bandR[cur_th].append(each.td.text)
+            # TODO (Garrett): Add method for scraping bands that don't have a th title box. Case: https://en.wikipedia.org/wiki/True_Symphonic_Rockestra
+            if cur_th == '':
+                continue
             if each.ul:
                 for li in each.ul:
                     if li == '\n':
@@ -83,7 +86,33 @@ def main():
                         pair[text]=None
                     print(text, pair[text])
                     bandR[cur_th].append({'Value':text, 'Link':urllib.parse.unquote(pair[text]) if pair[text] else pair[text]})
-            elif each.a:
+            elif each.td:
+                for item in each.td:
+                    if item.name == u'span':
+                        for i in item: # It's loops all the way down. Thanks, Glassjaw editors...
+                            if i.name == u'a':
+                                print('\n\t\tITEM : ',i.a, '\n\n\n')
+                                a_value = soup.find(lambda tag: (tag.name == 'a' 
+                                    and i.text == tag.text),href=True)
+                                if a_value:
+                                    pair[i.text]=a_value['href']
+                                else:
+                                    pair[i.text]=None
+                                print('\t',i.text, '----', pair[i.text])
+                                bandR[cur_th].append({'Value':i.text, 'Link':urllib.parse.unquote(pair[i.text])})
+                    print('\n\t', type(item), item, '\n\n')
+                    if item.name == u'a':
+                        print('\n\t\tITEM : ',item.a, '\n\n\n')
+                        a_value = soup.find(lambda tag: (tag.name == 'a' 
+                            and item.text == tag.text),href=True)
+                        if a_value:
+                            pair[item.text]=a_value['href']
+                        else:
+                            pair[item.text]=None
+                        print('\t',item.text, '----', pair[item.text])
+                        bandR[cur_th].append({'Value':item.text, 'Link':urllib.parse.unquote(pair[item.text])})
+            elif each.a and each.a.get('class') and each.a['class'] != 'image':
+                print('\n\n',each.a, '\n\n\n')
                 a_value = soup.find(lambda tag: (tag.name == 'a' 
                     and each.a.text == tag.text),href=True)
                 if a_value:
@@ -98,9 +127,6 @@ def main():
             print(row)
             print('\t', bandR[row])
         print(curse.lastrowid)
-
-        #conn.commit()
-
 
         sql_s = '''
             update visits

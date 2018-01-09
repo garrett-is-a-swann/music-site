@@ -1,0 +1,4 @@
+#!/bin/bash
+source ../venv/bin/activate
+unknownlogbands.sh | python parser.py && python clean_data.py --pg ../pg.conf
+deactivate

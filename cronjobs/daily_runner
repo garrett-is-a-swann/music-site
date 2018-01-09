@@ -1,0 +1,7 @@
+#!/bin/bash
+SDATE=$(date +%Y-%m-%d);
+STIME=$(date +%H-%M);
+SPATH=/home/oreganop/music-site/logs/$SDATE;
+cd /home/oreganop/music-site/wiki-scraper;
+mkdir -p $SPATH;
+bash daily_run >> $SPATH/daily_run_$STIME.txt

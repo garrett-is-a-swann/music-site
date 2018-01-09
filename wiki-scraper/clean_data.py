@@ -6,9 +6,6 @@ import sys
 
 sys.path.append('..')
 
-argparser = argparse.ArgumentParser(description="Normal or Rerun")
-argparser.add_argument('--rerun', dest='rerun', action='store_true')
-argparser.add_argument('--pg', dest='pconf')
 
 def main(conn_str, args):
     pconn = psycopg2.connect(conn_str)
@@ -136,6 +133,9 @@ def reset(lconn, lcurse):
 
 
 if __name__ == '__main__':
+    argparser = argparse.ArgumentParser(description="Normal or Rerun")
+    argparser.add_argument('--rerun', dest='rerun', action='store_true')
+    argparser.add_argument('--pg', dest='pconf')
     args=argparser.parse_args()
 
     with open(args.pconf, 'r') as f:
