@@ -255,7 +255,7 @@ router.route('/bands')
     })
     .post((req, res, next) => {
         console.log(req.body.name);
-        pool.query('SELECT id, name FROM dim_band WHERE name = $1', [req.body.name], (e, resp) => {
+        pool.query('SELECT id, name FROM dim_band WHERE lower(name) = lower($1)', [req.body.name], (e, resp) => {
             if(e){
                 console.log(e.stack);
             }
@@ -263,7 +263,10 @@ router.route('/bands')
                 console.log(resp.rows);
                 if(resp.rows.length) {
                     console.log(req.session.user)
-                        pool.query("SELECT b.name, string_agg(g.name, '|') as genres FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid WHERE b.name = $1 GROUP BY b.name",
+                        pool.query("SELECT b.name, string_agg(g.name, '|') as genres "
+                                +"FROM dim_genre g join fct_band_genre bg on g.id = bg.genreid join dim_band b on b.id = bg.bandid "
+                                +"WHERE lower(b.name) = lower($1) "
+                                +"GROUP BY b.name",
                           [req.body.name], (_e, _resp) => {
                             if(_e) {
                                 console.log(_e.stack);
