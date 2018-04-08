@@ -6,16 +6,16 @@ Icon?
 Thumbs.db
 
 # compiled output
-/music-site/dist
-/music-site/tmp
-/music-site/out-tsc
+/server/dist
+/client/tmp
+/client/out-tsc
 
 # dependencies
-/music-site/node_modules
-/music-site/bower_components
+node_modules
+/client/bower_components
 
 # IDEs and editors
-/music-site/.idea
+/client/.idea
 .project
 .classpath
 .c9/
@@ -31,17 +31,17 @@ Thumbs.db
 !.vscode/extensions.json
 
 # misc
-/music-site/.sass-cache
-/music-site/connect.lock
-/music-site/coverage
-/music-site/libpeerconnection.log
+/client/.sass-cache
+/client/connect.lock
+/client/coverage
+/client/libpeerconnection.log
 npm-debug.log
 testem.log
-/music-site/typings
+/client/typings
 
 # e2e
-/music-site/e2e/*.js
-/music-site/e2e/*.map
+/client/e2e/*.js
+/client/e2e/*.map
 
 # System Files
 .DS_Store
@@ -49,6 +49,7 @@ Thumbs.db
 
 # General
 # =======
+/server/configs
 *.conf
 *.config
 *.log
@@ -63,6 +64,7 @@ Thumbs.db
 *.swo
 logs/
 build/
+*.db
 
 # Sublime editor
 # ==============

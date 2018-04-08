@@ -1,0 +1,38 @@
+<section class="hero is-link">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Musiconnect
+            </h1>
+            <h2 class="subtitle">
+                A Music and Genre visualization tool, under active development
+            </h2>
+        </div>
+    </div>
+</section>
+
+<nav>
+    <div class='level fancy' style='background:hsl(0,0%,21%);'>
+        <div class='level-left'>
+            <a class='level-item' href='https://www.whoamong.us'>
+                <img src='static/favicon-256.png' alt='Cute cat as temporary logo.' style='height:52px'>
+            </a>
+            <a class='level-item button-boy' routerLink="" routerLinkActive="active">Home</a>
+        </div>
+        <div class='level-right'>
+            <a class='level-item button-boy' *ngIf='!authenticated' routerLink="/login" routerLinkActive="active">
+                Login</a>
+            <a class='level-item button-boy' *ngIf='authenticated' routerLinkActive='active'>
+                {{username}}</a>
+            <a class='level-item button-boy' *ngIf='!authenticated' routerLink="/register" routerLinkActive="active">
+                Register</a>
+            <a class='level-item button-boy' *ngIf='authenticated' (click)='auth.logout()' routerLinkActive="active">
+                Logout</a>
+        </div>
+    </div>
+</nav>
+<div class='columns'>
+    <div class='column'>
+        <router-outlet></router-outlet>
+    </div>
+</div>

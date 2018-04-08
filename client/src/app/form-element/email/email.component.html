@@ -1,0 +1,13 @@
+<div class='field'>
+    <div class='control'>
+    <input #email [(ngModel)]='model' name='email'
+        (keyup)='validate()' [ngClass]='style'
+        (keydown)='validate()'
+        (keyup.tab)='postValidate()' 
+        (blur)='postValidate()'
+        type='text' class='input' id='email' placeholder='Email' required>
+    <p class='help' [hidden]="error == ''">
+        {{ error }}
+    </p>
+    </div>
+</div>

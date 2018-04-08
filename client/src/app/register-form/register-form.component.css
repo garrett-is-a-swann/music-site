@@ -1,0 +1,26 @@
+.required {
+    border-left:5px solid #ef9b25
+}
+.valid {
+    border-left:5px solid #42A948
+}
+.invalid {
+    border-left:5px solid #a94442
+}
+.validating {
+    border-left:5px solid #f3ea30
+}
+.container {
+    text-align:center;
+}
+
+.form-control {
+    width:100%;
+}
+.container {
+    text-align:center;
+}
+
+.form-control {
+    width:100%;
+}

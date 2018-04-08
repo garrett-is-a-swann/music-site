@@ -2,6 +2,6 @@
 SDATE=$(date +%Y-%m-%d);
 STIME=$(date +%H-%M);
 SPATH=/home/oreganop/codeplay/music-site/logs/$SDATE;
-cd /home/oreganop/codeplay/music-site/wiki-scraper;
+cd /home/oreganop/codeplay/music-site/server/wiki-scraper;
 mkdir -p $SPATH;
 bash daily_run >> $SPATH/daily_run_$STIME.txt

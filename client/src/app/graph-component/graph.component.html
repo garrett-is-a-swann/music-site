@@ -1,0 +1,109 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class='columns is-multiline'>
+    <div class='column is-offset-1 is-5'>
+
+        <div class='field has-addons'>
+            <div class='control'>
+                <input class='input' type="text" value="Unsaved Graph" readonly="true" 
+                    #graphtitle
+                    ondblclick="this.readOnly=false;"
+                    onfocusout='this.readOnly=true;'
+                    >
+                <!-- LOSE FOCUS ON ENTER-->
+            </div>
+            <a class='button control is-dark is-outlined'
+                (click)='graphtitle.readOnly=false;graphtitle.focus()'
+                >
+                <span class='icon is-medium fa-lg'>
+                    <i class="fas fa-pen-square"></i>
+                </span>
+            </a>
+        </div>
+
+    </div>
+
+    <div class='column'>
+        <div class="field">
+            <div class="control"
+                 [ngClass]="{'has-icons-left':true}"
+                >
+                <div class="select">
+                    <select 
+                        #graphselector
+                        [(ngModel)]='graphselector_val'
+                        style="font-family:'FontAwesome', Arial;"
+                        [ngClass]="{'had-icons-left':graphselector._opened}"
+                        (click)="graphselector._opened=!graphselector._opened;
+                                graphselector._opened || graphSelected(graphselector.value);"
+                        (blur)="graphselector._opened=false;"
+                        >
+                        <option selected>{{graphtitle.value}}</option>
+                        <option 
+                            (click)='graphtitle.value="new GRAPH"'
+                        value='********'
+                        style='background-color:#dbdbdb'>
+                        New Graph</option>
+                    </select>
+                </div>
+                <div 
+                    *ngIf='!graphselector._opened'
+                    class="icon is-small is-left">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ABOVE GRAPH -->
+
+    <div class='column is-10 is-offset-1 cy-guy card' id="cy"></div>
+
+    <!-- BELOW GRAPH -->
+
+    <form class='column is-3 is-offset-1'>
+        <div class='field has-addons'>
+            <div class='control'>
+                <button class='button is-info' (click)="postBand(bandinput.value);bandinput.value=''">Add</button>
+            </div>
+            <div class='control is-expanded'>
+                <input class='input' #bandinput type='text' placeholder="Band Name">
+            </div>
+        </div>
+    </form>
+
+    <form class='column debug-order is-3'>
+        <div class='field has-addons'>
+            <a class='button control is-success is-outlined'>
+                <span class='icon is-medium fa-lg'>
+                    <i class="fab fa-spotify"></i>
+                </span>
+                <span>Playlist</span>
+            </a>
+            <div class='control is-expanded'>
+                <input class='input' type='text' placeholder="URL">
+            </div>
+        </div>
+    </form>
+
+    <div class='column debug-order is-offset-1 is-1'>
+        <p *ngIf='save_alert' class='has-text-success has-text-right'>Graph Saved!</p>
+    </div>
+
+    <div class='column debug-order is-1'>
+
+        <a class='button control is-success is-outlined'
+            (click)='save_alert=true;'
+            >
+            <span class='icon is-medium fa-2x has-text-dark'>
+                <i class="fas fa-save"></i>
+            </span>
+            <span>Save</span>
+        </a>
+
+    </div>
+
+    <div class='column debug-order is-1'>
+        <button class='button is-danger' (click)="boing()">Auto Size</button>
+    </div>
+</div>

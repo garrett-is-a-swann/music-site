@@ -1,0 +1,14 @@
+<div class='container'>
+    <h2 class='title is-2'>Login</h2>
+    <form>
+        <app-login [formtype]='"login"' #username name='username'></app-login>
+        <br>
+        <app-password [post_err]='password_error' #password></app-password>
+        <br>
+        <button (click)='postForm(username.model, password.model)'>Submit</button>
+        <label for='submit' [hidden]="response == ''">
+            {{ response }}
+        </label>
+    </form>
+
+</div>

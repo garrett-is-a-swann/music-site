@@ -1,0 +1,39 @@
+<div class='container'>
+    <h2 class='title is-2'>Register</h2>
+    <form>
+        <div class='form-group'>
+            <app-login [formtype]='"register"' #username></app-login>
+            <br>
+            <app-password #password></app-password>
+            <br>
+            <app-email #email></app-email>
+            <br>
+            <div class='field is-horizontal'>
+                <div class='field-body'>
+                    <div class='field'>
+                        <div class='control is-expanded'>
+                        <input [(ngModel)]='firstname' name='firstname'
+                            placeholder='First Name'
+                            type='text' class='input' id='firstname'>
+                        </div>
+                    </div>
+                    <div class='field'>
+                        <div class='control is-expanded'>
+                        <input [(ngModel)]='lastname' name='lastname'
+                            placeholder='Last Name'
+                            type='text' class='input' id='lastname'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button name='button is-primary submit'
+            (click)='postForm(username.model
+                            ,password.model
+                            ,email.model)'>Submit</button>
+        <label for='submit' [hidden]="response == ''">
+            {{ response }}
+        </label>
+    </form>
+
+</div>
